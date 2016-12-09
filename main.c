@@ -33,7 +33,7 @@ void convert_jpg_to_png() {
 
     if (writing == 1 && storage != NULL)
       fwrite(storage, sizeof (storage), 1, image);
-
+    
     if (storage == NULL)  fclose(image);
   }
 
@@ -47,4 +47,7 @@ int main(int argc, char* argv[]) {
   convert_jpg_to_png();
   return 0;
 }
+
+
+
 
