@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <bitset>
 
 using namespace std;
 
@@ -68,7 +69,7 @@ int main() {
   /* the whole file is now loaded in the memory buffer. */
   cout << "lSize: " << lSize << "_|" << endl;
   for (int i; i < lSize; i++) {
-    cout << "i: " << i << "  ---  " << "buffer[i]: " << buffer[i] << "_|" << endl;
+    cout << "i: " << i << "  ---  " << "buffer[i]: " << bitset<8>(buffer[i]) << "_|" << endl;
   }
   cout << "----------------------------------------------" << endl;
 
