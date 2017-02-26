@@ -23,7 +23,6 @@ int main() {
     fputs("File error", stderr);
     exit(1);
   }
-
   cout << "File OK" << endl;
   cout << "sizeof(pFile): " << sizeof (pFile) << "_|" << endl;
   cout << "pFile: " << pFile << "_|" << endl;
@@ -42,7 +41,6 @@ int main() {
     fputs("Memory error", stderr);
     exit(2);
   }
-
   cout << "Memory OK" << endl;
   cout << "lSize: " << lSize << "_|" << endl;
   cout << "sizeof(buffer): " << sizeof (buffer) << "_|" << endl;
@@ -57,7 +55,6 @@ int main() {
     fputs("Reading error", stderr);
     exit(3);
   }
-
   cout << "Reading OK" << endl;
   cout << "result: " << result << "_|" << endl;
   cout << "sizeof(buffer): " << sizeof (buffer) << "_|" << endl;
@@ -78,9 +75,6 @@ int main() {
   // terminate
   fclose(pFile);
   free(buffer);
-
-  
-  
   cout << "End of program" << endl;
   cout << "----------------------------------------------" << endl;
   //  printf("End of program");
