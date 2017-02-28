@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-#include <bitset>
 
 using namespace std;
 
+void printBIT(long i, unsigned char * buffer);
+long printBITS(long i, long j, unsigned char * buffer);
+void printbuffer(long lSize, unsigned char * buffer);
+void printBMP(long lSize, unsigned char * buffer);
+
 int main() {
-  cout << "----------------------------------------------" << endl;
-  cout << "Start of program" << endl;
-  cout << "----------------------------------------------" << endl << endl << endl << endl;
   FILE * pFile;
   long lSize;
   unsigned char * buffer;
@@ -24,8 +25,11 @@ int main() {
   unsigned char * buffer3;
   size_t result3;
   
-  
+  /****************************************************************************/
+  /***************************                      ***************************/
   /*********************               JPG                *********************/
+  /***************************                      ***************************/
+  /****************************************************************************/
   {
     pFile = fopen("originalJPG.jpg", "rb");
     if (pFile == NULL) {
@@ -51,11 +55,11 @@ int main() {
     }
   }
   
-  
-  
-  
-  
+  /****************************************************************************/
+  /***************************                      ***************************/
   /*********************               PNG                *********************/
+  /***************************                      ***************************/
+  /****************************************************************************/
   {
     pFile2 = fopen("originalPNG.png", "rb");
     if (pFile2 == NULL) {
@@ -81,11 +85,11 @@ int main() {
     }
   }
   
-  
-  
-  
-  
+  /****************************************************************************/
+  /***************************                      ***************************/
   /*********************               BMP                *********************/
+  /***************************                      ***************************/
+  /****************************************************************************/
   {
     pFile3 = fopen("originalBMP.bmp", "rb");
     if (pFile3 == NULL) {
@@ -111,44 +115,23 @@ int main() {
     }
   }
   
-  
-  
-  
-  
+//  {
+//    cout << "----------------------------------------------" << endl;
+//    cout << "lSize  : " << lSize << "_|" << endl;
+//    cout << "buffer : " << buffer << "_|" << endl;
+//    cout << "lSize2 : " << lSize2 << "_|" << endl;
+//    cout << "buffer2: " << buffer2 << "_|" << endl;
+//    cout << "lSize3 : " << lSize3 << "_|" << endl;
+//    cout << "buffer3: " << buffer3 << "_|" << endl;
+//    cout << "----------------------------------------------" << endl << endl << endl << endl;
+//  }
   
   cout << "----------------------------------------------" << endl;
-  cout << "lSize  : " << lSize << "_|" << endl;
-  cout << "buffer : " << buffer << "_|" << endl;
-//  for (int i; i < lSize; i++) {
-//    cout << "i: " << i << "  ---  " << "buffer[i]: ";
-//    printf("0x%02x", buffer[i]);
-//    cout << "_|" << endl;
-//  }
+//  printbuffer(lSize, buffer);
+//  printbuffer(lSize2, buffer2);
+//  printbuffer(lSize3, buffer3);
+  printBMP(lSize3, buffer3);
   cout << "----------------------------------------------" << endl << endl << endl << endl;
-  
-  
-  cout << "----------------------------------------------" << endl;
-  cout << "lSize2 : " << lSize2 << "_|" << endl;
-  cout << "buffer2: " << buffer2 << "_|" << endl;
-//  for (int i; i < lSize2; i++) {
-//    cout << "i: " << i << "  ---  " << "buffer[i]: ";
-//    printf("0x%02x", buffer2[i]);
-//    cout << "_|" << endl;
-//  }
-  cout << "----------------------------------------------" << endl << endl << endl << endl;
-  
-  
-  cout << "----------------------------------------------" << endl;
-  cout << "lSize3 : " << lSize3 << "_|" << endl;
-  cout << "buffer3: " << buffer3 << "_|" << endl;
-//  for (int i; i < lSize3; i++) {
-//    cout << "i: " << i << "  ---  " << "buffer3[i]: ";
-//    printf("0x%02x", buffer3[i]);
-//    cout << "_|" << endl;
-//  }
-  cout << "----------------------------------------------" << endl << endl << endl << endl;
-  
-  
   
   // terminate
   fclose(pFile);
@@ -159,8 +142,74 @@ int main() {
   
   fclose(pFile3);
   free(buffer3);
-  cout << "----------------------------------------------" << endl;
-  cout << "End of program" << endl;
-  cout << "----------------------------------------------" << endl;
   return 0;
+}
+
+#define SCREEN_FACTOR 65
+
+void printBIT(long i, unsigned char * buffer){
+  printf("buffer[%6d]:   %02X_|\n", i, buffer[i]);
+}
+
+long printBITS(long i, long j, unsigned char * buffer){
+  unsigned long sum = 0;
+  
+  printf("buffer[%6d-%6d]:   ", i, j);
+  
+  if(j > i) {
+    for(long k = i; k < j; k++){
+      printf("%02X", buffer[k]);
+      sum *= 256;
+      sum += (unsigned long)buffer[k];
+    }
+      
+  }
+  else {
+    for(long k = i-1; k > j-1; k--){
+      printf("%02X", buffer[k]);
+      sum *= 256;
+      sum += (unsigned long)buffer[k];
+    }
+  }
+
+  printf("\n                  sum:            = %lu\n", sum);
+  return j;
+}
+
+void printbuffer(long lSize, unsigned char * buffer){
+  for (long i = 0; i < lSize; i+=SCREEN_FACTOR) {
+    for (long j = i; j < i+SCREEN_FACTOR && j < lSize; j ++)
+      printBIT(j, buffer);
+    char g;
+    cin >> g;
+  }
+  return;
+}
+
+void printBMP(long lSize, unsigned char * buffer){
+  cout << "Going to print BMP" << endl;
+  cout << endl;
+
+  long i = 0;
+  
+  cout << "BMP Header" << endl;
+  printBITS(0, 2, buffer);
+  printBITS(6, 2, buffer);
+  printBITS(6, 8, buffer);
+  printBITS(8, 10, buffer);
+  printBITS(14, 10, buffer);
+  cout << endl;
+  
+  cout << "DIB Header" << endl;
+  printBITS(18, 14, buffer);
+  printBITS(22, 18, buffer);
+  printBITS(26, 22, buffer);
+  printBITS(28, 26, buffer);
+  printBITS(30, 28, buffer);
+  printBITS(34, 30, buffer);
+  printBITS(38, 34, buffer);
+  
+  cout << endl;
+  
+  return;
 }
