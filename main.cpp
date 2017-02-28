@@ -15,7 +15,7 @@ int main() {
   
   FILE * pFile;
   long lSize;
-  char * buffer;
+  unsigned char * buffer;
   size_t result;
 
   pFile = fopen("originalJPG.jpg", "rb");
@@ -36,7 +36,7 @@ int main() {
   rewind(pFile);
 
   // allocate memory to contain the whole file:
-  buffer = (char*) malloc(sizeof (char)*lSize);
+  buffer = (unsigned char*) malloc(sizeof (unsigned char)*lSize);
   if (buffer == NULL) {
     fputs("Memory error", stderr);
     exit(2);
@@ -66,7 +66,11 @@ int main() {
   /* the whole file is now loaded in the memory buffer. */
   cout << "lSize: " << lSize << "_|" << endl;
   for (int i; i < lSize; i++) {
-    cout << "i: " << i << "  ---  " << "buffer[i]: " << bitset<8>(buffer[i]) << "_|" << endl;
+//    cout << "i: " << i << "  ---  " << "buffer[i]: " << bitset<8>(buffer[i]) << "_|" << endl;
+//    cout << "i: " << i << "  ---  " << "buffer[i]: " << bitset<16>(buffer[i]) << "_|" << endl;
+    cout << "i: " << i << "  ---  " << "buffer[i]: ";
+    printf("0x%02x", buffer[i]);
+    cout << "_|" << endl;
   }
   cout << "----------------------------------------------" << endl;
 
