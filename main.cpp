@@ -5,22 +5,31 @@
 using namespace std;
 
 int main() {
+  cout << "----------------------------------------------" << endl;
   cout << "Start of program" << endl;
-//  printf("Start of program");
+  cout << "----------------------------------------------" << endl;
+  //  printf("Start of program");
+
+  
   
   FILE * pFile;
   long lSize;
   char * buffer;
   size_t result;
 
-  pFile = fopen("hello", "rb");
+  pFile = fopen("originalJPG.jpg", "rb");
   if (pFile == NULL) {
     fputs("File error", stderr);
     exit(1);
   }
-  
-  cout << "File OK" << endl;
 
+  cout << "File OK" << endl;
+  cout << "sizeof(pFile): " << sizeof (pFile) << "_|" << endl;
+  cout << "pFile: " << pFile << "_|" << endl;
+  cout << "----------------------------------------------" << endl;
+
+  
+  
   // obtain file size:
   fseek(pFile, 0, SEEK_END);
   lSize = ftell(pFile);
@@ -34,6 +43,12 @@ int main() {
   }
 
   cout << "Memory OK" << endl;
+  cout << "lSize: " << lSize << "_|" << endl;
+  cout << "sizeof(buffer): " << sizeof (buffer) << "_|" << endl;
+  cout << "buffer: " << buffer << "_|" << endl;
+  cout << "----------------------------------------------" << endl;
+
+  
   
   // copy the file into the buffer:
   result = fread(buffer, 1, lSize, pFile);
@@ -41,24 +56,32 @@ int main() {
     fputs("Reading error", stderr);
     exit(3);
   }
-  
+
   cout << "Reading OK" << endl;
+  cout << "result: " << result << "_|" << endl;
+  cout << "sizeof(buffer): " << sizeof (buffer) << "_|" << endl;
+  cout << "buffer: " << buffer << "_|" << endl;
+  cout << "----------------------------------------------" << endl;
+
+  
 
   /* the whole file is now loaded in the memory buffer. */
-  cout << "lSize: " << lSize << endl;
-  cout << "sizeof(buffer): " << sizeof(buffer) << endl;
-  cout << "buffer: " << buffer << "---|" << endl;
-  
-  
-  
-//  cout << "Bytebybyte" << endl;
-  
+  cout << "lSize: " << lSize << "_|" << endl;
+  for (int i; i < lSize; i++) {
+    cout << "i: " << i << "  ---  " << "buffer[i]: " << buffer[i] << "_|" << endl;
+  }
+  cout << "----------------------------------------------" << endl;
 
+  
+  
   // terminate
   fclose(pFile);
   free(buffer);
+
+  
   
   cout << "End of program" << endl;
-//  printf("End of program");
+  cout << "----------------------------------------------" << endl;
+  //  printf("End of program");
   return 0;
 }
