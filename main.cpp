@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <assert.h>
 
 using namespace std;
 
@@ -123,7 +124,8 @@ int main() {
 //    cout << "buffer2: " << buffer2 << "_|" << endl;
 //    cout << "lSize3 : " << lSize3 << "_|" << endl;
 //    cout << "buffer3: " << buffer3 << "_|" << endl;
-//    cout << "----------------------------------------------" << endl << endl << endl << endl;
+//    cout << "----------------------------------------------" 
+//  << endl << endl << endl << endl;
 //  }
   
   cout << "----------------------------------------------" << endl;
@@ -131,7 +133,7 @@ int main() {
 //  printbuffer(lSize2, buffer2);
 //  printbuffer(lSize3, buffer3);
   printBMP(lSize3, buffer3);
-  cout << "----------------------------------------------" << endl << endl << endl << endl;
+  cout << "----------------------------------------------" << endl;
   
   // terminate
   fclose(pFile);
@@ -148,7 +150,7 @@ int main() {
 #define SCREEN_FACTOR 65
 
 void printBIT(long i, unsigned char * buffer){
-  printf("buffer[%6d]:   %02X_|\n", i, buffer[i]);
+  printf("buffer[%6d]:   %02X\n", i, buffer[i]);
 }
 
 long printBITS(long i, long j, unsigned char * buffer){
@@ -173,7 +175,32 @@ long printBITS(long i, long j, unsigned char * buffer){
   }
 
   printf("\n                  sum:            = %lu\n", sum);
-  return j;
+  return sum;
+}
+
+long printBITSinHEX(long i, long j, unsigned char * buffer){
+  unsigned long sum = 0;
+  
+  printf("buffer[%6d-%6d]:   ", i, j);
+  
+  if(j > i) {
+    for(long k = i; k < j; k++){
+      printf("%02X", buffer[k]);
+      sum *= 256;
+      sum += (unsigned long)buffer[k];
+    }
+      
+  }
+  else {
+    for(long k = i-1; k > j-1; k--){
+      printf("%02X", buffer[k]);
+      sum *= 256;
+      sum += (unsigned long)buffer[k];
+    }
+  }
+
+  printf("\n                  sum:            = %lu\n", sum);
+  return sum;
 }
 
 void printbuffer(long lSize, unsigned char * buffer){
@@ -190,26 +217,67 @@ void printBMP(long lSize, unsigned char * buffer){
   cout << "Going to print BMP" << endl;
   cout << endl;
 
-  long i = 0;
-  
   cout << "BMP Header" << endl;
-  printBITS(0, 2, buffer);
-  printBITS(6, 2, buffer);
-  printBITS(6, 8, buffer);
-  printBITS(8, 10, buffer);
-  printBITS(14, 10, buffer);
+  
+  long signature = printBITS(0, 2, buffer);
+  long fileSize = printBITS(6, 2, buffer);
+  printBITS(6, 8, buffer); // Reserved1
+  printBITS(8, 10, buffer); // Reserved2
+  long offsetPixelArray = printBITS(14, 10, buffer);
+  
   cout << endl;
   
   cout << "DIB Header" << endl;
-  printBITS(18, 14, buffer);
-  printBITS(22, 18, buffer);
-  printBITS(26, 22, buffer);
-  printBITS(28, 26, buffer);
-  printBITS(30, 28, buffer);
-  printBITS(34, 30, buffer);
-  printBITS(38, 34, buffer);
+  
+  long dibHeaderSize = printBITS(18, 14, buffer);
+  long imageWidth = printBITS(22, 18, buffer);
+  long imageHeight = printBITS(26, 22, buffer);
+  printBITS(28, 26, buffer); /// Planes
+  long bitsPerPixel = printBITS(30, 28, buffer);
+  long compression = printBITS(34, 30, buffer);
+  long imageSize = printBITS(38, 34, buffer);
   
   cout << endl;
+  
+  
+  cout << "Headers finished------------------------------" << endl;
+  long endPixelArray = offsetPixelArray + imageSize;
+  cout << "offsetPixelArray: " << offsetPixelArray << endl;
+  cout << "imageSize: " << imageSize << endl;
+  cout << "endPixelArray: " << endPixelArray << endl << endl;
+  
+  
+  
+  cout << "Pixel array parameters------------------------" << endl;
+  long bytesPerPixel = bitsPerPixel / 8;
+  long lineSize = imageSize/imageHeight;
+  long paddingPerLine = lineSize % bitsPerPixel;
+  
+  cout << "bitsPerPixel: " << bitsPerPixel << endl;
+  cout << "bytesPerPixel: " << bytesPerPixel << endl;
+  cout << "imageWidth: " << imageWidth << endl;
+  cout << "imageHeight: " << imageHeight << endl;
+  cout << "lineSize: " << lineSize << endl;
+  cout << "paddingPerLine: " << paddingPerLine << endl;
+  cout << endl;
+  
+  assert(lineSize-paddingPerLine == imageWidth*bytesPerPixel);
+  
+  cout << "Start the pixel array printing----------------" << endl;
+  for(long i = offsetPixelArray; i < endPixelArray; i+=lineSize){
+    
+    for(long j = i; j < i+lineSize-paddingPerLine; j+=bytesPerPixel){
+      printBITS(j, j+bytesPerPixel, buffer);
+      cout << "  ";
+    }
+    char g;
+    cin >> g;
+    
+    cout << endl;
+//    printBITS(i, i+imageWidth, buffer);
+    
+    
+  }
   
   return;
 }
