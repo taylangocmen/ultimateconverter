@@ -7,7 +7,10 @@ using namespace std;
 
 void printBIT(long i, unsigned char * buffer);
 long printBITS(long i, long j, unsigned char * buffer);
+long printBITSinHEX(long i, long j, unsigned char * buffer);
 void printbuffer(long lSize, unsigned char * buffer);
+void printJPG(long lSize, unsigned char * buffer);
+void printPNG(long lSize, unsigned char * buffer);
 void printBMP(long lSize, unsigned char * buffer);
 
 int main() {
@@ -132,7 +135,9 @@ int main() {
 //  printbuffer(lSize, buffer);
 //  printbuffer(lSize2, buffer2);
 //  printbuffer(lSize3, buffer3);
-  printBMP(lSize3, buffer3);
+//  printJPG(lSize, buffer);
+  printPNG(lSize2, buffer2);
+//  printBMP(lSize3, buffer3);
   cout << "----------------------------------------------" << endl;
   
   // terminate
@@ -214,21 +219,18 @@ void printbuffer(long lSize, unsigned char * buffer){
 }
 
 void printBMP(long lSize, unsigned char * buffer){
-  cout << "Going to print BMP" << endl;
-  cout << endl;
+  cout << "Going to print BMP" << endl << endl;
 
   cout << "BMP Header" << endl;
-  
   long signature = printBITS(0, 2, buffer);
   long fileSize = printBITS(6, 2, buffer);
   printBITS(6, 8, buffer); // Reserved1
   printBITS(8, 10, buffer); // Reserved2
   long offsetPixelArray = printBITS(14, 10, buffer);
-  
   cout << endl;
   
-  cout << "DIB Header" << endl;
   
+  cout << "DIB Header" << endl;
   long dibHeaderSize = printBITS(18, 14, buffer);
   long imageWidth = printBITS(22, 18, buffer);
   long imageHeight = printBITS(26, 22, buffer);
@@ -236,7 +238,6 @@ void printBMP(long lSize, unsigned char * buffer){
   long bitsPerPixel = printBITS(30, 28, buffer);
   long compression = printBITS(34, 30, buffer);
   long imageSize = printBITS(38, 34, buffer);
-  
   cout << endl;
   
   
@@ -245,7 +246,6 @@ void printBMP(long lSize, unsigned char * buffer){
   cout << "offsetPixelArray: " << offsetPixelArray << endl;
   cout << "imageSize: " << imageSize << endl;
   cout << "endPixelArray: " << endPixelArray << endl << endl;
-  
   
   
   cout << "Pixel array parameters------------------------" << endl;
@@ -280,4 +280,19 @@ void printBMP(long lSize, unsigned char * buffer){
   }
   
   return;
+}
+
+void printJPG(long lSize, unsigned char * buffer){
+  cout << "Going to print JPG" << endl << endl;
+  
+}
+
+void printPNG(long lSize, unsigned char * buffer){
+  cout << "Going to print PNG" << endl << endl;
+  
+  cout << "PNG Header" << endl;
+  long transmissionSystem = printBITS(0, 1, buffer);
+  cout << "transmissionSystem: " << transmissionSystem << endl;
+  long signature  = printBITS(1, 4, buffer);
+  cout << "signature: " << signature << endl;
 }
