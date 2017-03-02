@@ -14,6 +14,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <cstdlib>
+#include <assert.h>
+#include <cstring>
+#include "zlib.h"
 
 typedef struct ultimate_image {
   FILE * pFile;
@@ -30,6 +34,9 @@ unsigned char* get_bits_hex(long i, long j, unsigned char * buffer);
 void print_buffer(long lSize, unsigned char * buffer);
 uImage* open_file(const char* filename);
 void close_file(uImage* image);
+
+char* compress_string(char* unComp, unsigned len);
+char* decompress_string(char* compD, unsigned len);
 
 #endif /* UTILS_H */
 

@@ -106,6 +106,35 @@ void print_buffer(long lSize, unsigned char * buffer) {
   return;
 }
 
+char* compress_string(char* unComp, unsigned len){
+  
+  uLong ucompSize = len+1;
+  uLong compSize = compressBound(ucompSize);
+
+  char* compD;
+  compD = new char[compSize];
+  
+  // Deflate
+  compress((Bytef *)compD, &compSize, (Bytef *)unComp, ucompSize);
+
+  return compD;
+}
+
+char* decompress_string(char* compD, unsigned len){
+  
+  uLong ucompSize = len+1;
+  uLong compSize = compressBound(ucompSize);
+
+  char* unComp;
+  unComp = new char[len];
+  
+  // Deflate
+  uncompress((Bytef *)unComp, &ucompSize, (Bytef *)compD, compSize);
+  
+  return unComp;
+}
+
+
 uImage* open_file(const char* filename) {
 
   uImage* opened;
