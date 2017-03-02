@@ -1,8 +1,9 @@
 #include <iostream>
+#include
 
 using namespace std;
 
-int main() {
+void hello(void){
   cout << "Start of program" << endl;
   cout << "Hello, World!" << endl;
   cout << "End of program" << endl;

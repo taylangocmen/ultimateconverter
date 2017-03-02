@@ -17,6 +17,7 @@ void printbuffer(long lSize, unsigned char * buffer);
 void printJPG(long lSize, unsigned char * buffer);
 void printPNG(long lSize, unsigned char * buffer);
 void printBMP(long lSize, unsigned char * buffer);
+bool checkPNGHeaderCrit(long header);
 
 int main() {
   FILE * pFile;
@@ -295,11 +296,7 @@ void printPNG(long lSize, unsigned char * buffer){
     cout << "----------------------------------------------" << endl;
     cout << "chunk start" << endl;
     
-    cout << "test: " << 255 / 16 << endl;
-    
     long length = printBITS(chunkIndex, chunkIndex+4, buffer);
-    char lengthBuffer[4];
-    
     cout << "length: " << length << endl << endl;
     chunkIndex+=4;
 
