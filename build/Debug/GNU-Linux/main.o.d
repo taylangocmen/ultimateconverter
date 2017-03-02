@@ -1,3 +1,7 @@
-build/Debug/GNU-Linux/main.o: main.cpp hello.h
+build/Debug/GNU-Linux/main.o: main.cpp utils.h bmp.h png.h
 
-hello.h:
+utils.h:
+
+bmp.h:
+
+png.h:
