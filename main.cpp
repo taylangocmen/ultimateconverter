@@ -1,13 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <cstdlib>
 #include <assert.h>
+
+#include "headers.h"
 
 using namespace std;
 
+// TODO: multiplication can be optimized with 
+
+
 void printBIT(long i, unsigned char * buffer);
 long printBITS(long i, long j, unsigned char * buffer);
-long printBITSinHEX(long i, long j, unsigned char * buffer);
 void printbuffer(long lSize, unsigned char * buffer);
 void printJPG(long lSize, unsigned char * buffer);
 void printPNG(long lSize, unsigned char * buffer);
@@ -183,31 +188,6 @@ long printBITS(long i, long j, unsigned char * buffer){
   return sum;
 }
 
-long printBITSinHEX(long i, long j, unsigned char * buffer){
-  unsigned long sum = 0;
-  
-  printf("buffer[%6d-%6d]:   ", i, j);
-  
-  if(j > i) {
-    for(long k = i; k < j; k++){
-      printf("%02X", buffer[k]);
-      sum *= 256;
-      sum += (unsigned long)buffer[k];
-    }
-      
-  }
-  else {
-    for(long k = i-1; k > j-1; k--){
-      printf("%02X", buffer[k]);
-      sum *= 256;
-      sum += (unsigned long)buffer[k];
-    }
-  }
-
-  printf("\n                  sum:            = %lu\n", sum);
-  return sum;
-}
-
 void printbuffer(long lSize, unsigned char * buffer){
   for (long i = 0; i < lSize; i+=SCREEN_FACTOR) {
     for (long j = i; j < i+SCREEN_FACTOR && j < lSize; j ++)
@@ -292,7 +272,51 @@ void printPNG(long lSize, unsigned char * buffer){
   
   cout << "PNG Header" << endl;
   long transmissionSystem = printBITS(0, 1, buffer);
-  cout << "transmissionSystem: " << transmissionSystem << endl;
+  cout << "transmissionSystem: " << transmissionSystem << endl << endl;
   long signature  = printBITS(1, 4, buffer);
-  cout << "signature: " << signature << endl;
+  cout << "signature: " << signature << endl << endl;
+  long crlf = printBITS(4, 6, buffer);
+  cout << "crlf: " << crlf << endl << endl;
+  long endoffile = printBITS(6, 7, buffer);
+  cout << "endoffile: " << endoffile << endl << endl;
+  long lf = printBITS(7, 8, buffer);
+  cout << "lf: " << lf << endl << endl;
+  
+//  for(int i = 8; i < 100; i+=13){
+//    long nextThirteen = printBITS(i, i+13, buffer);
+//    cout << "nextThirteen: " << nextThirteen << endl << endl;
+//  }
+
+  long chunkIndex = PNG_HEADER_SIZE;
+  
+  char userin = 'p';
+  
+  while(chunkIndex < lSize && userin != 'q'){
+    cout << "----------------------------------------------" << endl;
+    cout << "chunk start" << endl;
+    
+    cout << "test: " << 255 / 16 << endl;
+    
+    long length = printBITS(chunkIndex, chunkIndex+4, buffer);
+    char lengthBuffer[4];
+    
+    cout << "length: " << length << endl << endl;
+    chunkIndex+=4;
+
+    long chunktype = printBITS(chunkIndex, chunkIndex+4, buffer);
+    cout << "chunktype: " << chunktype << endl << endl;
+    chunkIndex+=4;
+
+    long chunkdata = printBITS(chunkIndex, chunkIndex+length, buffer);
+    cout << "chunkdata: " << chunkdata << endl << endl;
+    chunkIndex+=length;
+
+    long crc = printBITS(chunkIndex, chunkIndex+4, buffer);
+    cout << "crc: " << crc << endl << endl;
+    chunkIndex+=4;
+    
+    cout << "chunk ended" << endl << "type q to quit anything else to continue: ";
+    cin >> userin;
+  }
+  
 }
