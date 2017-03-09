@@ -79,15 +79,21 @@ int main(int argc, char** argv) {
 
     if(input == "png")
       do_png((char *) "originalPNG.png");
+    
     else if(input == "bmp")
       do_bmp();
+    
     else if(input == "half")
       do_png((char *) "halfandhalf.png");
+    
     else if(input == "white")
       do_png((char *) "solidwhite.png");
+     
     else if(input == "black")
       do_png((char *) "solidblack.png");
         
+    else if(input == "string")
+      do_test();
   }
 
   // nikita see here sample

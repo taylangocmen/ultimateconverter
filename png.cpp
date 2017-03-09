@@ -111,9 +111,6 @@ void print_png(uImage* img) {
         cout << "ucompSize: " << ucompSize << endl;
         cout << "compSize: " << compSize << endl;
 
-        cout << "unComp: " << unComp << endl;
-        cout << "comp: " << comp << endl << endl;
-
         uncompress((Bytef *)unComp, &ucompSize, (Bytef *)comp, compSize);// Inflate
         compress((Bytef *)reComp, &compSize, (Bytef *)unComp, ucompSize);         // Deflate
         
