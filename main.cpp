@@ -67,9 +67,9 @@ void do_test(void) {
 
 int main(int argc, char** argv) {
 
-//    do_bmp();
+    do_bmp();
     do_png();
-//  do_test();
+  do_test();
 
   return 0;
 }
