@@ -74,27 +74,34 @@ void do_test(void) {
 }
 
 int main(void) {
+  
+  cout << "sizeof(char)" << sizeof(char) << endl;
+  cout << "sizeof(unsigned)" << sizeof(unsigned) << endl;
+  cout << "sizeof(int)" << sizeof(int) << endl;
+  cout << "sizeof(unsigned int)" << sizeof(unsigned int) << endl;
+  cout << "sizeof(long)" << sizeof(long) << endl;
+  cout << "sizeof(unsigned long)" << sizeof(unsigned long) << endl;
 
-  string input = "";
-  
-  png_bytep * testrunone = testrun1();
-  png_bytep * pngsampleone = pngsample();
-  
-
-  
-  for (int y = 0; y < 768; y++) {
-    png_byte* row1 = testrunone[y];
-    png_byte* row2 = pngsampleone[y];
-    for (int x = 0; x < 1024; x++) {
-      png_byte* ptr1 = &(row1[x * 3]);
-      png_byte* ptr2 = &(row2[x * 3]);
-//      printf("..testrunone [ %d - %d ] has RGB values: %d - %d - %d\n",
-//        x, y, ptr1[0], ptr1[1], ptr1[2]);
-//      printf("pngsampleone [ %d - %d ] has RGB values: %d - %d - %d\n",
-//        x, y, ptr2[0], ptr2[1], ptr2[2]); if(x == 1023) printf("\n");
-      
-    }
-  }
+//  string input = "";
+//  
+//  png_bytep * testrunone = testrun1();
+//  png_bytep * pngsampleone = pngsample();
+//  
+//
+//  
+//  for (int y = 0; y < 768; y++) {
+//    png_byte* row1 = testrunone[y];
+//    png_byte* row2 = pngsampleone[y];
+//    for (int x = 0; x < 1024; x++) {
+//      png_byte* ptr1 = &(row1[x * 3]);
+//      png_byte* ptr2 = &(row2[x * 3]);
+////      printf("..testrunone [ %d - %d ] has RGB values: %d - %d - %d\n",
+////        x, y, ptr1[0], ptr1[1], ptr1[2]);
+////      printf("pngsampleone [ %d - %d ] has RGB values: %d - %d - %d\n",
+////        x, y, ptr2[0], ptr2[1], ptr2[2]); if(x == 1023) printf("\n");
+//      
+//    }
+//  }
   
   //  do_bmp("bmp_testrun1.bmp");
 //  do_png((char *) "png_small.png");

@@ -9,8 +9,6 @@
 #ifndef PNGSAMPLE_H
 #define PNGSAMPLE_H
 
-#include <png.h>
-
 png_bytep* pngsample();
 
 #endif /* PNGSAMPLE_H */
