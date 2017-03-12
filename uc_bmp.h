@@ -10,6 +10,7 @@
 #define BMP_H
 
 #define BMP_BM 'BM'
+#define BMP_HEADER_SIZE 14
 
 void print_bmp(uImage* img);
 
