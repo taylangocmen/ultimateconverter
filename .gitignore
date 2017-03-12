@@ -1,5 +1,22 @@
-# Prerequisites
-*.d
+# Ignore all
+*
+
+# Unignore all with extensions
+!*.*
+
+# Unignore all dirs
+!*/
+
+# Unignore make files
+!*MAKEFILE
+!*Makefile
+
+# OSX
+.DS_Store
+
+# Editor / IDE project files
+nbproject/
+.idea/
 
 # Compiled Object files
 *.slo
@@ -31,6 +48,3 @@
 *.out
 *.app
 
-/nbproject/
-/build/
-/dist/
