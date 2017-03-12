@@ -42,6 +42,24 @@ long print_bits(long i, long j, unsigned char * buffer) {
   return sum;
 }
 
+long print_bits_testrun(long i, long j, unsigned char * buffer){
+  long sum = 0;
+  if (j > i) {
+    for (long k = i; k < j; k++) {
+      printf("%02X ", buffer[k]);
+      sum *= 256;
+      sum += (long) buffer[k];
+    }
+  } else {
+    for (long k = i - 1; k > j - 1; k--) {
+      printf("%02X ", buffer[k]);
+      sum *= 256;
+      sum += (long) buffer[k];
+    }
+  }
+  return sum;
+}
+
 long get_bits(long i, long j, unsigned char * buffer) {
   long sum = 0;
   if (j > i) {
@@ -170,6 +188,22 @@ void close_file(uImage* image) {
 
   fclose(image->pFile);
   free(image->buffer);
+
+  return;
+}
+
+void print_binary(size_t const size, void const * const ptr) {
+  unsigned char *b = (unsigned char*) ptr;
+  unsigned char byte;
+  int i, j;
+
+  for (i = size-1; i >= 0; i--) {
+    for (j = 7; j >= 0; j--) {
+      byte = (b[i] >> j) & 1;
+      printf("%u", byte);
+    }
+  }
+  printf("\n");
 
   return;
 }
