@@ -22,11 +22,13 @@
 #define BINARY(x)    (print_binary(sizeof(x), &x))
 
 typedef struct ultimate_image_file {
-  FILE * pFile;
-  unsigned lSize;
+  FILE* pFile;
+  size_t lSize;
   unsigned char * buffer;
   size_t result;
 } uFile;
+
+void abort_utils(const char * s, ...);
 
 void print_bit(long i, unsigned char * buffer);
 long print_bits(long i, long j, unsigned char * buffer);

@@ -16,17 +16,9 @@
 #define PNG_DEBUG 3
 #include <png.h>
 #include "pngsample.h"
+#include "utils.h"
 
 using namespace std;
-
-void abort_(const char * s, ...) {
-  va_list args;
-  va_start(args, s);
-  vfprintf(stderr, s, args);
-  fprintf(stderr, "\n");
-  va_end(args);
-  abort();
-}
 
 int x, y;
 
@@ -45,24 +37,24 @@ void read_png_file(char* file_name) {
   /* open file and test for it being a png */
   FILE *fp = fopen(file_name, "rb");
   if (!fp)
-    abort_("[read_png_file] File %s could not be opened for reading", file_name);
+    abort_utils("[read_png_file] File %s could not be opened for reading", file_name);
   fread(header, 1, 8, fp);
   if (png_sig_cmp(header, 0, 8))
-    abort_("[read_png_file] File %s is not recognized as a PNG file", file_name);
+    abort_utils("[read_png_file] File %s is not recognized as a PNG file", file_name);
 
 
   /* initialize stuff */
   png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
   if (!png_ptr)
-    abort_("[read_png_file] png_create_read_struct failed");
+    abort_utils("[read_png_file] png_create_read_struct failed");
 
   info_ptr = png_create_info_struct(png_ptr);
   if (!info_ptr)
-    abort_("[read_png_file] png_create_info_struct failed");
+    abort_utils("[read_png_file] png_create_info_struct failed");
 
   if (setjmp(png_jmpbuf(png_ptr)))
-    abort_("[read_png_file] Error during init_io");
+    abort_utils("[read_png_file] Error during init_io");
 
   png_init_io(png_ptr, fp);
   png_set_sig_bytes(png_ptr, 8);
@@ -80,7 +72,7 @@ void read_png_file(char* file_name) {
 
   /* read file */
   if (setjmp(png_jmpbuf(png_ptr)))
-    abort_("[read_png_file] Error during read_image");
+    abort_utils("[read_png_file] Error during read_image");
 
   row_pointers = (png_bytep*) malloc(sizeof (png_bytep) * height);
   for (y = 0; y < height; y++)
@@ -95,28 +87,28 @@ void write_png_file(char* file_name) {
   /* create file */
   FILE *fp = fopen(file_name, "wb");
   if (!fp)
-    abort_("[write_png_file] File %s could not be opened for writing", file_name);
+    abort_utils("[write_png_file] File %s could not be opened for writing", file_name);
 
 
   /* initialize stuff */
   png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
   if (!png_ptr)
-    abort_("[write_png_file] png_create_write_struct failed");
+    abort_utils("[write_png_file] png_create_write_struct failed");
 
   info_ptr = png_create_info_struct(png_ptr);
   if (!info_ptr)
-    abort_("[write_png_file] png_create_info_struct failed");
+    abort_utils("[write_png_file] png_create_info_struct failed");
 
   if (setjmp(png_jmpbuf(png_ptr)))
-    abort_("[write_png_file] Error during init_io");
+    abort_utils("[write_png_file] Error during init_io");
 
   png_init_io(png_ptr, fp);
 
 
   /* write header */
   if (setjmp(png_jmpbuf(png_ptr)))
-    abort_("[write_png_file] Error during writing header");
+    abort_utils("[write_png_file] Error during writing header");
 
   png_set_IHDR(png_ptr, info_ptr, width, height,
     bit_depth, color_type, PNG_INTERLACE_NONE,
@@ -127,14 +119,14 @@ void write_png_file(char* file_name) {
 
   /* write bytes */
   if (setjmp(png_jmpbuf(png_ptr)))
-    abort_("[write_png_file] Error during writing bytes");
+    abort_utils("[write_png_file] Error during writing bytes");
 
   png_write_image(png_ptr, row_pointers);
 
 
   /* end write */
   if (setjmp(png_jmpbuf(png_ptr)))
-    abort_("[write_png_file] Error during end of write");
+    abort_utils("[write_png_file] Error during end of write");
 
   png_write_end(png_ptr, NULL);
 

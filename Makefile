@@ -2,9 +2,9 @@ CPP = g++
 
 RM = rm -f
 
-CPPFLAGS = -Wall -g
+CPPFLAGS = -Wall -g -O3
 
-PERMISSIONS = -Wno-multichar #-Wwrite-strings -fpermissive -Wunused-variable -Wsign-compare
+PERMISSIONS = -Wno-multichar -Wno-write-strings #-fpermissive -Wunused-variable -Wsign-compare
 
 LIBS = -lz -lpng
 

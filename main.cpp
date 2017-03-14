@@ -86,7 +86,9 @@ int main(void) {
   
   cout << "sizeof(long): " << sizeof(long) << endl;
   cout << "sizeof(unsigned long): " << sizeof(unsigned long) << endl;
-
+  
+  cout << "sizeof(unsigned): " << sizeof(unsigned) << endl;
+  
 //  string input = "";
 //  
 //  png_bytep * testrunone = testrun1();

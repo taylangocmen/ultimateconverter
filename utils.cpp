@@ -7,13 +7,25 @@
  */
 
 #include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
 #include <assert.h>
+#include <stdarg.h>
 
 #include "utils.h"
 
 using namespace std;
 
 // TODO: multiplication can be optimized with shifts
+
+void abort_utils(const char * s, ...) {
+  va_list args;
+  va_start(args, s);
+  vfprintf(stderr, s, args);
+  fprintf(stderr, "\n");
+  va_end(args);
+  abort();
+}
 
 void print_bit(long i, unsigned char * buffer) {
   printf("buffer[%6ld]:   %02X\n", i, buffer[i]);

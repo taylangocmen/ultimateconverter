@@ -133,6 +133,8 @@ void print_png(uFile* img) {
 //        }
 
 //        print_bits(chunkIndex, chunkIndex + length, buffer);
+        
+        delete [] chunkdataHex;
       }
     }
     
@@ -146,7 +148,7 @@ void print_png(uFile* img) {
     cout << "----------------------------------------------" << endl;
   }
 
-  delete [] chunkdataHex;
+  
 }
 
 bool check_png_header_crit(long header) {

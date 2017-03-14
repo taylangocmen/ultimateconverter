@@ -99,56 +99,56 @@ png_bytep * testrun1(void){
 
 //  long lSize = bmpImage->lSize;
   
-  cout << "BMP Header-----------------------------------" << endl;
+  //cout << "BMP Header-----------------------------------" << endl;
   long signature = get_bits(0, 2, buffer);
-  cout << "signature: " << signature << endl;
+  //cout << "signature: " << signature << endl;
 
   long fileSize = get_bits(6, 2, buffer);
-  cout << "fileSize: " << fileSize << endl;
+  //cout << "fileSize: " << fileSize << endl;
 
   long reserved1 = get_bits(6, 8, buffer);
-  cout << "reserved1: " << reserved1 << endl;
+  //cout << "reserved1: " << reserved1 << endl;
 
   long reserved2 = get_bits(8, 10, buffer);
-  cout << "reserved2: " << reserved2 << endl;
+  //cout << "reserved2: " << reserved2 << endl;
 
   long offsetPixelArray = get_bits(14, 10, buffer);
-  cout << "offsetPixelArray: " << offsetPixelArray << endl;
+  //cout << "offsetPixelArray: " << offsetPixelArray << endl;
 
 
-  cout << endl << "DIB Header-----------------------------------" << endl;
+  //cout << endl << "DIB Header-----------------------------------" << endl;
   long dibHeaderSize = get_bits(18, 14, buffer);
-  cout << "dibHeaderSize: " << dibHeaderSize << endl;
+  //cout << "dibHeaderSize: " << dibHeaderSize << endl;
 
   long imageWidth = get_bits(22, 18, buffer);
-  cout << "imageWidth: " << imageWidth << endl;
+  //cout << "imageWidth: " << imageWidth << endl;
 
   long imageHeight = get_bits(26, 22, buffer);
-  cout << "imageHeight: " << imageHeight << endl;
+  //cout << "imageHeight: " << imageHeight << endl;
 
   long planes = get_bits(28, 26, buffer); /// Planes
-  cout << "planes: " << planes << endl;
+  //cout << "planes: " << planes << endl;
 
   long bitsPerPixel = get_bits(30, 28, buffer);
-  cout << "bitsPerPixel: " << bitsPerPixel << endl;
+  //cout << "bitsPerPixel: " << bitsPerPixel << endl;
 
   long compression = get_bits(34, 30, buffer);
-  cout << "compression: " << compression << endl;
+  //cout << "compression: " << compression << endl;
 
   long imageSize = get_bits(38, 34, buffer);
-  cout << "imageSize: " << imageSize << endl;
+  //cout << "imageSize: " << imageSize << endl;
 
   long xPixelsPM = get_bits(42, 38, buffer);
-  cout << "xPixelsPM: " << xPixelsPM << endl;
+  //cout << "xPixelsPM: " << xPixelsPM << endl;
   
   long yPixelsPM = get_bits(46, 42, buffer);
-  cout << "yPixelsPM: " << yPixelsPM << endl;
+  //cout << "yPixelsPM: " << yPixelsPM << endl;
   
   long colorsInTable = get_bits(50, 46, buffer);
-  cout << "colorsInTable: " << colorsInTable << endl;
+  //cout << "colorsInTable: " << colorsInTable << endl;
   
   long importantColorC = get_bits(54, 50, buffer);
-  cout << "importantColorC: " << importantColorC << endl;
+  //cout << "importantColorC: " << importantColorC << endl;
   
   long** colorTable;
   colorTable = new long*[colorsInTable];
@@ -156,7 +156,7 @@ png_bytep * testrun1(void){
     colorTable[i] = new long[3];
   
   
-  cout << endl << "Color Table------------------------------" << endl;
+  //cout << endl << "Color Table------------------------------" << endl;
   
   unsigned j = 0;
   for(long index = BMP_HEADER_SIZE + dibHeaderSize; 
@@ -164,60 +164,60 @@ png_bytep * testrun1(void){
     index+=4, j++){
     
 //    long currColor = get_bits(index+4, index, buffer);
-//    cout << "currColor " << currColor << endl;
-//    cout << "color: ";
+//    //cout << "currColor " << currColor << endl;
+//    //cout << "color: ";
 //    print_bits(index+4, index, buffer);
-//    cout << endl;
+//    //cout << endl;
     
-//    cout << "red: ";
+//    //cout << "red: ";
     colorTable[j][0] = get_bits(index+3, index+2, buffer);
-//    cout << endl;
+//    //cout << endl;
     
-//    cout << "green: ";
+//    //cout << "green: ";
     colorTable[j][1] = get_bits(index+2, index+1, buffer);
-//    cout << endl;
+//    //cout << endl;
     
-//    cout << "blue: ";
+//    //cout << "blue: ";
     colorTable[j][2] = get_bits(index+1, index, buffer);
-//    cout << endl << endl;
+//    //cout << endl << endl;
   }
   
   assert(j == colorsInTable);
   
 //  long redChannelBitmask = get_bits(58, 54, buffer);
-//  cout << endl << "redChannelBitmask: " << redChannelBitmask << endl;
+//  //cout << endl << "redChannelBitmask: " << redChannelBitmask << endl;
 //  BINARY(redChannelBitmask);
 //  
 //  long greenChannelBitmask = get_bits(62, 58, buffer);
-//  cout << endl << "greenChannelBitmask: " << greenChannelBitmask << endl;
+//  //cout << endl << "greenChannelBitmask: " << greenChannelBitmask << endl;
 //  BINARY(greenChannelBitmask);
 //  
 //  long blueChannelBitmask = get_bits(66, 62, buffer);
-//  cout << endl << "blueChannelBitmask: " << blueChannelBitmask << endl;
+//  //cout << endl << "blueChannelBitmask: " << blueChannelBitmask << endl;
 //  BINARY(blueChannelBitmask);
 //  
 //  long alphaChannelBitmask = get_bits(70, 66, buffer);
-//  cout << endl << "alphaChannelBitmask: " << alphaChannelBitmask << endl;
+//  //cout << endl << "alphaChannelBitmask: " << alphaChannelBitmask << endl;
 //  BINARY(alphaChannelBitmask);
   
   
-  cout << endl << "Headers finished------------------------------" << endl;
+  //cout << endl << "Headers finished------------------------------" << endl;
   long endPixelArray = offsetPixelArray + imageSize;
-  cout << "endPixelArray: " << endPixelArray << endl;
+  //cout << "endPixelArray: " << endPixelArray << endl;
 
 
-  cout << endl << "Pixel array parameters------------------------" << endl;
+  //cout << endl << "Pixel array parameters------------------------" << endl;
   long bytesPerPixel = bitsPerPixel / 8;
-  cout << "bytesPerPixel: " << bytesPerPixel << endl;
+  //cout << "bytesPerPixel: " << bytesPerPixel << endl;
 
   long lineSize = imageSize / imageHeight;
-  cout << "lineSize: " << lineSize << endl;
+  //cout << "lineSize: " << lineSize << endl;
 
   long paddingPerLine = lineSize % bitsPerPixel;
-  cout << "paddingPerLine: " << paddingPerLine << endl;
+  //cout << "paddingPerLine: " << paddingPerLine << endl;
 
   assert(lineSize - paddingPerLine == imageWidth * bytesPerPixel);
-  cout << "bytesPerPixel: " << bytesPerPixel << endl;
+  //cout << "bytesPerPixel: " << bytesPerPixel << endl;
   
   tr_width = (int)imageWidth;
   tr_height = (int)imageHeight;
@@ -258,20 +258,20 @@ png_bytep * testrun1(void){
       pixelArray[rowIndex][colIndex][2] = colorTable[pixel][2];
 
 
-//      cout << "color " << color << endl;
+//      //cout << "color " << color << endl;
 //      BINARY(color);
 //      
-//      cout << "red: " << red;
-//      cout << " - green: " << green;
-//      cout << " - blue: " << blue << endl;
+//      //cout << "red: " << red;
+//      //cout << " - green: " << green;
+//      //cout << " - blue: " << blue << endl;
 //
-//      cout << "red256: " << red256;
-//      cout << " - green256: " << green256;
-//      cout << " - blue256: " << blue256 << endl;
+//      //cout << "red256: " << red256;
+//      //cout << " - green256: " << green256;
+//      //cout << " - blue256: " << blue256 << endl;
 
-//      cout << "channelred: " << channelred;
-//      cout << " - channelgreen: " << channelgreen;
-//      cout << " - channelblue: " << channelblue << endl << endl;
+//      //cout << "channelred: " << channelred;
+//      //cout << " - channelgreen: " << channelgreen;
+//      //cout << " - channelblue: " << channelblue << endl << endl;
     }
     
     assert(colIndex == imageWidth);
@@ -291,8 +291,8 @@ png_bytep * testrun1(void){
     png_byte* row = tr_row_pointers[y];
     for (int x = 0; x < tr_width; x++) {
       png_byte* ptr = &(row[x * 3]);
-//      printf("Pixel at position [ %d - %d ] has RGBA values: %d - %d - %d\n",
-//        x, y, ptr[0], ptr[1], ptr[2]); if(x == tr_width-1) printf("\n");
+//      //printf("Pixel at position [ %d - %d ] has RGBA values: %d - %d - %d\n",
+//        x, y, ptr[0], ptr[1], ptr[2]); if(x == tr_width-1) //printf("\n");
       ptr[0] = pixelArray[y][x][0];
       ptr[1] = pixelArray[y][x][1];
       ptr[2] = pixelArray[y][x][2];
@@ -318,15 +318,15 @@ png_bytep * testrun1(void){
   close_file(bmpImage);
   free(bmpImage);
   
-  cout << "test run ------------------" << endl;
-  cout << "width " << tr_width << endl;
-  cout << "height " << tr_height << endl;
-  printf("color_type %02X\n", tr_color_type);
-  printf("bit_depth %02X\n", tr_bit_depth);
-  cout << "png_get_rowbytes(png_ptr, info_ptr) " 
-    << png_get_rowbytes(tr_png_ptr, tr_info_ptr) << endl;
-  cout << "sizeof (png_bytep) * height "
-    << sizeof (png_bytep) * tr_height << endl;
+  //cout << "test run ------------------" << endl;
+  //cout << "width " << tr_width << endl;
+  //cout << "height " << tr_height << endl;
+  //printf("color_type %02X\n", tr_color_type);
+  //printf("bit_depth %02X\n", tr_bit_depth);
+  //cout << "png_get_rowbytes(png_ptr, info_ptr) " 
+//    << png_get_rowbytes(tr_png_ptr, tr_info_ptr) << endl;
+  //cout << "sizeof (png_bytep) * height "
+//    << sizeof (png_bytep) * tr_height << endl;
   
   
   return tr_row_pointers;
