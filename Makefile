@@ -4,7 +4,7 @@ RM = rm -f
 
 CPPFLAGS = -Wall -g -O3
 
-PERMISSIONS = -Wno-multichar -Wno-write-strings #-fpermissive -Wunused-variable -Wsign-compare
+PERMISSIONS = -Wno-multichar -Wno-write-strings -Wno-unused-variable #-fpermissive -Wno-sign-compare
 
 LIBS = -lz -lpng
 

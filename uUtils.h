@@ -9,14 +9,16 @@
 #ifndef UUTILS_H
 #define UUTILS_H
 
+#define BINARY(x)    (print_binary(sizeof(x), &x))
+
 enum format {
   bmp,
   jpg,
-  jpeg,
   png,
 };
 
-unsigned get_bytes(unsigned i, unsigned j, unsigned char* buffer);
+unsigned to_power(unsigned base, unsigned power);
+void print_binary(size_t const size, void const* const ptr);
 
 #endif /* UUTILS_H */
 

@@ -19,7 +19,6 @@
 #include <cstring>
 #include "zlib.h"
 
-#define BINARY(x)    (print_binary(sizeof(x), &x))
 
 typedef struct ultimate_image_file {
   FILE* pFile;
@@ -41,7 +40,7 @@ uFile* open_file(const char* filename);
 void close_file(uFile* image);
 char* compress_string(char* unComp, unsigned len);
 char* decompress_string(char* compD, unsigned len);
-void print_binary(size_t const size, void const * const ptr);
+
 
 #endif /* UTILS_H */
 
