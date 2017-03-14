@@ -16,11 +16,11 @@ using namespace std;
 
 //void print_bmp(long lSize, unsigned char * buffer){
 
-void print_bmp(uImage* img) {
+void print_bmp(uFile* img) {
   cout << "Going to print BMP" << endl << endl;
 
   unsigned char* buffer = img->buffer;
-  long lSize = img->lSize;
+//  long lSize = img->lSize;
 
   cout << "BMP Header-----------------------------------" << endl;
   long signature = get_bits(0, 2, buffer);

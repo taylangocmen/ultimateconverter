@@ -16,7 +16,7 @@ using namespace std;
 // TODO: multiplication can be optimized with shifts
 
 void print_bit(long i, unsigned char * buffer) {
-  printf("buffer[%6d]:   %02X\n", i, buffer[i]);
+  printf("buffer[%6ld]:   %02X\n", i, buffer[i]);
 }
 
 long print_bits(long i, long j, unsigned char * buffer) {
@@ -116,8 +116,9 @@ unsigned char* get_bits_hex(long i, long j, unsigned char * buffer) {
 
 void print_buffer(long lSize, unsigned char * buffer) {
   for (long i = 0; i < lSize; i += SCREEN_FACTOR) {
-    for (long j = i; j < i + SCREEN_FACTOR && j < lSize; j++)
+    for (long j = i; j < i + SCREEN_FACTOR && j < lSize; j++){
       print_bit(j, buffer);
+    }
     char g;
     cin >> g;
   }
@@ -153,10 +154,10 @@ char* decompress_string(char* compD, unsigned len){
 }
 
 
-uImage* open_file(const char* filename) {
+uFile* open_file(const char* filename) {
 
-  uImage* opened;
-  opened = new uImage;
+  uFile* opened;
+  opened = new uFile;
 
   opened->pFile = fopen(filename, "rb");
   if (opened->pFile == NULL) {
@@ -169,7 +170,7 @@ uImage* open_file(const char* filename) {
   rewind(opened->pFile);
 
   // allocate memory to contain the whole file:
-  opened->buffer = (unsigned char*) malloc(sizeof (unsigned char)*opened->lSize);
+  opened->buffer = (unsigned char*) malloc(sizeof (unsigned char) * opened->lSize);
   if (opened->buffer == NULL) {
     fputs("Memory error", stderr);
     exit(2);
@@ -184,7 +185,7 @@ uImage* open_file(const char* filename) {
   return opened;
 }
 
-void close_file(uImage* image) {
+void close_file(uFile* image) {
 
   fclose(image->pFile);
   free(image->buffer);

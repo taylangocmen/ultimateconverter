@@ -30,7 +30,7 @@ using namespace std;
 
 void do_bmp(char* file_name) {
   const char* bmpName = file_name;
-  uImage* bmpImage = open_file(bmpName);
+  uFile* bmpImage = open_file(bmpName);
   print_bmp(bmpImage);
   close_file(bmpImage);
   free(bmpImage);
@@ -75,12 +75,17 @@ void do_test(void) {
 
 int main(void) {
   
-  cout << "sizeof(char)" << sizeof(char) << endl;
-  cout << "sizeof(unsigned)" << sizeof(unsigned) << endl;
-  cout << "sizeof(int)" << sizeof(int) << endl;
-  cout << "sizeof(unsigned int)" << sizeof(unsigned int) << endl;
-  cout << "sizeof(long)" << sizeof(long) << endl;
-  cout << "sizeof(unsigned long)" << sizeof(unsigned long) << endl;
+  cout << "sizeof(char): " << sizeof(char) << endl;
+  cout << "sizeof(unsigned char): " << sizeof(unsigned char) << endl;
+  
+  cout << "sizeof(short): " << sizeof(short) << endl;
+  cout << "sizeof(unsigned short): " << sizeof(unsigned short) << endl;
+  
+  cout << "sizeof(int): " << sizeof(int) << endl;
+  cout << "sizeof(unsigned int): " << sizeof(unsigned int) << endl;
+  
+  cout << "sizeof(long): " << sizeof(long) << endl;
+  cout << "sizeof(unsigned long): " << sizeof(unsigned long) << endl;
 
 //  string input = "";
 //  

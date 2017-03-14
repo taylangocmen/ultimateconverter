@@ -41,7 +41,7 @@
 #define PNG_zTXt 'zTXt'
 
 
-void print_png(uImage* img);
+void print_png(uFile* img);
 bool check_png_header_crit(long header);
 const char* header_to_string(long header);
 

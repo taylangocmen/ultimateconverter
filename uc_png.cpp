@@ -18,9 +18,9 @@
 
 using namespace std;
 
-void print_png(uImage* img) {
+void print_png(uFile* img) {
   unsigned char* buffer = img->buffer;
-  long lSize = img->lSize;
+  unsigned lSize = img->lSize;
   unsigned char* chunkdataHex;
 
   cout << "----------------------------------------------" << endl;
@@ -91,17 +91,17 @@ void print_png(uImage* img) {
         
         if(length > 100) {
           for(long x = 0; x < 2; x++)
-            printf("comp[%6d]:   %02X\n", x, (unsigned char)comp[x]);
+            printf("comp[%6ld]:   %02X\n", x, (unsigned char)comp[x]);
           for(long x = length-4; x < length; x++)
-            printf("comp[%6d]:   %02X\n", x, (unsigned char)comp[x]);
+            printf("comp[%6ld]:   %02X\n", x, (unsigned char)comp[x]);
         }
         else if (length > 40){
           for(long x = 0; x < length; x++)
-            printf("comp[%6d]:   %02X\n", x, (unsigned char)comp[x]);
+            printf("comp[%6ld]:   %02X\n", x, (unsigned char)comp[x]);
         }
         else {
           for(long x = 0; x < length; x+=10){
-            printf("comp[%6d - %6d]:   %02X", x, x+9, (unsigned char)comp[x]);
+            printf("comp[%6ld - %6ld]:   %02X", x, x+9, (unsigned char)comp[x]);
             printf("   %02X", (unsigned char)comp[x+1]);
             printf("   %02X", (unsigned char)comp[x+2]);
             printf("   %02X", (unsigned char)comp[x+3]);

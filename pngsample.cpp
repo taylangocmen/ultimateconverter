@@ -40,7 +40,7 @@ int number_of_passes;
 png_bytep * row_pointers;
 
 void read_png_file(char* file_name) {
-  char header[8]; // 8 is the maximum size that can be checked
+  unsigned char header[8]; // 8 is the maximum size that can be checked
 
   /* open file and test for it being a png */
   FILE *fp = fopen(file_name, "rb");
@@ -177,8 +177,8 @@ void process_file(void) {
     png_byte* row = row_pointers[y];
     for (x = 0; x < width; x++) {
       png_byte* ptr = &(row[x * multiplier]);
-//      printf("Pixel at position [ %d - %d ] has RGBA values: %d - %d - %d\n",
-//        x, y, ptr[0], ptr[1], ptr[2]); if(x == width-1) printf("\n");
+      printf("Pixel at position [ %d - %d ] has RGBA values: %d - %d - %d\n",
+        x, y, ptr[0], ptr[1], ptr[2]); if(x == width-1) printf("\n");
       /* set red value to 0 and green value to the blue one */
 //      ptr[0] = 0;
 //      ptr[1] = ptr[2];

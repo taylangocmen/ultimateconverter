@@ -94,10 +94,10 @@ png_bytep * testrun1(void){
 //  const char* bmpName = "bmp_solidblack.bmp";
 //  const char* bmpName = "bmp_solidwhite.bmp";
   
-  uImage* bmpImage = open_file(bmpName);
+  uFile* bmpImage = open_file(bmpName);
   unsigned char* buffer = bmpImage->buffer;
 
-  long lSize = bmpImage->lSize;
+//  long lSize = bmpImage->lSize;
   
   cout << "BMP Header-----------------------------------" << endl;
   long signature = get_bits(0, 2, buffer);
@@ -163,7 +163,7 @@ png_bytep * testrun1(void){
     index < BMP_HEADER_SIZE + dibHeaderSize + (4 * colorsInTable); 
     index+=4, j++){
     
-    long currColor = get_bits(index+4, index, buffer);
+//    long currColor = get_bits(index+4, index, buffer);
 //    cout << "currColor " << currColor << endl;
 //    cout << "color: ";
 //    print_bits(index+4, index, buffer);

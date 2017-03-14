@@ -21,12 +21,12 @@
 
 #define BINARY(x)    (print_binary(sizeof(x), &x))
 
-typedef struct ultimate_image {
+typedef struct ultimate_image_file {
   FILE * pFile;
-  long lSize;
+  unsigned lSize;
   unsigned char * buffer;
   size_t result;
-} uImage;
+} uFile;
 
 void print_bit(long i, unsigned char * buffer);
 long print_bits(long i, long j, unsigned char * buffer);
@@ -35,8 +35,8 @@ long get_bits(long i, long j, unsigned char * buffer);
 unsigned long long get_ll_bits(long i, long j, unsigned char * buffer);
 unsigned char* get_bits_hex(long i, long j, unsigned char * buffer);
 void print_buffer(long lSize, unsigned char * buffer);
-uImage* open_file(const char* filename);
-void close_file(uImage* image);
+uFile* open_file(const char* filename);
+void close_file(uFile* image);
 char* compress_string(char* unComp, unsigned len);
 char* decompress_string(char* compD, unsigned len);
 void print_binary(size_t const size, void const * const ptr);
