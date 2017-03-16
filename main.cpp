@@ -59,15 +59,15 @@ void do_test(void) {
 
 int main(void) {
 
-//    uImage* testBmp;
-//    testBmp = new uImage("bmp_testrun1.bmp", bmp);
-//    testBmp->convert("bmp_testrun1_uImage.png", png);
-//    delete testBmp;
+    uImage* testBmp;
+    testBmp = new uImage("bmp_testrun1.bmp", bmp);
+    testBmp->convert("bmp_testrun1_to_png_uImage.png", png);
+    delete testBmp;
 
-    uImage* testPng;
-    testPng = new uImage("png_testrun1.png", png);
-    testPng->convert("png_testrun1_uImage.png", png);
-    delete testPng;
+//    uImage* testPng;
+//    testPng = new uImage("png_testrun1.png", png);
+//    testPng->convert("png_testrun1_to_png_uImage.png", png);
+//    delete testPng;
     
 //    pngsample();
     

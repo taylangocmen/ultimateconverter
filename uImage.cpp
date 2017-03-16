@@ -144,6 +144,8 @@ void uImage::decipher_bmp() {
     unsigned colorsInTable = get_bytes(50, 46);
     unsigned short** colorTable;
 
+    pxFormat = 3;
+    
     if (bitsPPx == BMP_1BPP || bitsPPx == BMP_2BPP || bitsPPx == BMP_4BPP || bitsPPx == BMP_8BPP) {
         assert(colorsInTable == to_power(2, bitsPPx));
         colorTable = new unsigned short*[colorsInTable];
@@ -238,7 +240,7 @@ void uImage::decipher_png() {
     //  color_type = png_get_color_type(png_ptr, info_ptr);
     //  bit_depth = png_get_bit_depth(png_ptr, info_ptr);
 
-    int number_of_passes = png_set_interlace_handling(png_ptr);
+    png_set_interlace_handling(png_ptr);
     png_read_update_info(png_ptr, info_ptr);
 
 
@@ -284,16 +286,13 @@ void uImage::write_jpg(const char* fileName) {
 }
 
 void uImage::write_png(const char* fileName) {
+    png_bytep* row_pointers = (png_bytep*) malloc(sizeof (png_bytep) * pxHeight);
+    for (unsigned y = 0; y < pxHeight; y++)
+        row_pointers[y] = (png_byte*) malloc(pxFormat * pxWidth);
 
-    int ui_width = (int) pxWidth;
-    int ui_height = (int) pxHeight;
-    png_bytep* ui_row_pointers = (png_bytep*) malloc(sizeof (png_bytep) * ui_height);
-    for (int y = 0; y < ui_height; y++)
-        ui_row_pointers[y] = (png_byte*) malloc(3 * ui_width);
-
-    for (int y = 0; y < ui_height; y++) {
-        png_byte* row = ui_row_pointers[y];
-        for (int x = 0; x < ui_width; x++) {
+    for (unsigned y = 0; y < pxHeight; y++) {
+        png_byte* row = row_pointers[y];
+        for (unsigned x = 0; x < pxWidth; x++) {
             png_byte* ptr = &(row[x * pxFormat]);
             ptr[0] = pxArr[y][x][0];
             ptr[1] = pxArr[y][x][1];
@@ -303,47 +302,47 @@ void uImage::write_png(const char* fileName) {
         }
     }
 
-    png_byte ui_color_type = '\x02';
-    png_byte ui_bit_depth = '\x08';
-    png_structp ui_png_ptr;
-    png_infop ui_info_ptr;
+    png_byte color_type = '\x02';
+    png_byte bit_depth = '\x08';
+    png_structp png_ptr;
+    png_infop info_ptr;
 
     FILE *file = fopen(fileName, "wb");
     if (!file)
-        abort_("[ui_write_png_file] File %s could not be opened for writing", fileName);
-    ui_png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+        abort_("[write_png_file] File %s could not be opened for writing", fileName);
+    png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
-    if (!ui_png_ptr)
-        abort_("[ui_write_png_file] png_create_write_struct failed");
-    ui_info_ptr = png_create_info_struct(ui_png_ptr);
+    if (!png_ptr)
+        abort_("[write_png_file] png_create_write_struct failed");
+    info_ptr = png_create_info_struct(png_ptr);
 
-    if (!ui_info_ptr)
-        abort_("[ui_write_png_file] png_create_info_struct failed");
+    if (!info_ptr)
+        abort_("[write_png_file] png_create_info_struct failed");
 
-    if (setjmp(png_jmpbuf(ui_png_ptr)))
-        abort_("[ui_write_png_file] Error during init_io");
-    png_init_io(ui_png_ptr, file);
+    if (setjmp(png_jmpbuf(png_ptr)))
+        abort_("[write_png_file] Error during init_io");
+    png_init_io(png_ptr, file);
 
-    if (setjmp(png_jmpbuf(ui_png_ptr)))
-        abort_("[ui_write_png_file] Error during writing header");
+    if (setjmp(png_jmpbuf(png_ptr)))
+        abort_("[write_png_file] Error during writing header");
 
-    png_set_IHDR(ui_png_ptr, ui_info_ptr, ui_width, ui_height,
-        ui_bit_depth, ui_color_type, PNG_INTERLACE_NONE,
+    png_set_IHDR(png_ptr, info_ptr, (int)pxWidth, (int)pxHeight,
+        bit_depth, color_type, PNG_INTERLACE_NONE,
         PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 
-    png_write_info(ui_png_ptr, ui_info_ptr);
+    png_write_info(png_ptr, info_ptr);
 
-    if (setjmp(png_jmpbuf(ui_png_ptr)))
-        abort_("[ui_write_png_file] Error during writing bytes");
-    png_write_image(ui_png_ptr, ui_row_pointers);
+    if (setjmp(png_jmpbuf(png_ptr)))
+        abort_("[write_png_file] Error during writing bytes");
+    png_write_image(png_ptr, row_pointers);
 
-    if (setjmp(png_jmpbuf(ui_png_ptr)))
-        abort_("[ui_write_png_file] Error during end of write");
-    png_write_end(ui_png_ptr, NULL);
+    if (setjmp(png_jmpbuf(png_ptr)))
+        abort_("[write_png_file] Error during end of write");
+    png_write_end(png_ptr, NULL);
 
-    for (int y = 0; y < ui_height; y++)
-        free(ui_row_pointers[y]);
-    free(ui_row_pointers);
+    for (unsigned y = 0; y < pxHeight; y++)
+        free(row_pointers[y]);
+    free(row_pointers);
 
     fclose(file);
 }
