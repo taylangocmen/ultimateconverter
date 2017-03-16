@@ -9,7 +9,6 @@
 #include "uc_utils.h"
 
 void read_png(UC_IMAGE* image) {
-
     unsigned i, j;
 
     fseek(image->file, 8, SEEK_SET);

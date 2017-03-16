@@ -8,7 +8,6 @@
 #include "uc_utils.h"
 
 UC_IMAGE* open_uc_image(const char* fileName, unsigned fmt) {
-
     UC_IMAGE* image;
     image = (UC_IMAGE*) malloc(sizeof (UC_IMAGE));
 

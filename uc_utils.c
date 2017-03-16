@@ -48,7 +48,6 @@ void print_binary(size_t const size, void const * const ptr) {
 }
 
 unsigned get_bytes(unsigned i, unsigned j, unsigned char* buffer) {
-    // TODO: this is not finsihed at all
     unsigned sum = 0;
     unsigned k = 0;
 

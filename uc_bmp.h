@@ -22,8 +22,6 @@
 #define BMP_24BPP 24
 #define BMP_32BPP 32
 
-
 void read_bmp(UC_IMAGE* image);
-
 
 #endif /* UC_BMP_H */

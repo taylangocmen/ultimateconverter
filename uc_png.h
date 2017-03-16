@@ -34,10 +34,8 @@
 #define PNG_tRNS 'tRNS'
 #define PNG_zTXt 'zTXt'
 
-
 void read_png(UC_IMAGE* image);
 
 void write_png(UC_IMAGE* image, const char* fileName);
-
 
 #endif /* UC_PNG_H */
