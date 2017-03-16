@@ -9,6 +9,8 @@
 #ifndef UUTILS_H
 #define UUTILS_H
 
+#include <stdlib.h>
+
 #define BINARY(x)    (print_binary(sizeof(x), &x))
 
 enum format {

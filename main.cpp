@@ -28,14 +28,6 @@ using namespace std;
  * 
  */
 
-void do_png(char* file_name) {
-//      const char* pngName = file_name; //"originalPNG.png";
-//      uFile* pngImage = open_file(pngName);
-//      print_png(pngImage);
-//      close_file(pngImage);
-//      free(pngImage);
-}
-
 void do_test(void) {
     char a[500] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
         "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim "
@@ -67,10 +59,17 @@ void do_test(void) {
 
 int main(void) {
 
-    uImage* testBmp;
-    testBmp = new uImage("bmp_testrun1.bmp", bmp);
-    testBmp->convert("bmp_testrun1_converted_png.png", png);
-    delete testBmp;
+//    uImage* testBmp;
+//    testBmp = new uImage("bmp_testrun1.bmp", bmp);
+//    testBmp->convert("bmp_testrun1_uImage.png", png);
+//    delete testBmp;
+
+    uImage* testPng;
+    testPng = new uImage("png_testrun1.png", png);
+    testPng->convert("png_testrun1_uImage.png", png);
+    delete testPng;
+    
+//    pngsample();
     
     return 0;
 }

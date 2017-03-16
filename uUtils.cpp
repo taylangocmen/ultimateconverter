@@ -6,6 +6,11 @@
  * Created on March 14, 2017, 1:32 AM
  */
 
+#include <stdlib.h>
+#include <stdio.h>
+
+using namespace std;
+
 unsigned to_power(unsigned base, unsigned power){
   if(power == 0 || base == 1)
     return 1;

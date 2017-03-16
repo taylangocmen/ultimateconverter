@@ -46,11 +46,11 @@ uImage::uImage(const char* fileName, format fmt) {
     fName = (char *) fileName;
 
     fFormat = fmt;
-    
-    if(fmt == bmp) decipher_bmp();
-    else if(fmt == jpg) decipher_jpg();
-    else if(fmt == png) decipher_png();
-        
+
+    if (fmt == bmp) decipher_bmp();
+    else if (fmt == jpg) decipher_jpg();
+    else if (fmt == png) decipher_png();
+
 }
 
 uImage::uImage(const uImage& orig) {
@@ -65,16 +65,16 @@ void uImage::convert(const char* fileName, format fmt) {
 
     check_status();
 
-    if(fmt == bmp) write_bmp(fileName);
-    else if(fmt == jpg) write_jpg(fileName);
-    else if(fmt == png) write_png(fileName);
+    if (fmt == bmp) write_bmp(fileName);
+    else if (fmt == jpg) write_jpg(fileName);
+    else if (fmt == png) write_png(fileName);
     //TODO: do the writebacks
 }
 
-void uImage::print_array(){
-    for(unsigned i = 0; i < pxHeight; i++){
-        for(unsigned j = 0; j < pxWidth; j++){
-            for(unsigned k = 0; k < 4; k++){
+void uImage::print_array() {
+    for (unsigned i = 0; i < pxHeight; i++) {
+        for (unsigned j = 0; j < pxWidth; j++) {
+            for (unsigned k = 0; k < 4; k++) {
                 cout << "pxArr[" << i << "][" << j << "][" << k << "]: " << pxArr[i][j][k] << endl;
             }
         }
@@ -168,13 +168,13 @@ void uImage::decipher_bmp() {
     assert(lineSize - paddingPLine == pxWidth * bytesPPx);
 
     pxArr = new unsigned short**[pxHeight];
-    for(unsigned i = 0; i < pxHeight; i++){
+    for (unsigned i = 0; i < pxHeight; i++) {
         pxArr[i] = new unsigned short*[pxWidth];
-        for(unsigned j = 0; j < pxWidth; j++){
+        for (unsigned j = 0; j < pxWidth; j++) {
             pxArr[i][j] = new unsigned short[4];
         }
     }
-    
+
     assert(dibHSize >= DIB_INFO);
     if (dibHSize == DIB_INFO) {
         unsigned rowIndex = pxHeight - 1;
@@ -212,6 +212,67 @@ void uImage::decipher_jpg() {
 
 void uImage::decipher_png() {
 
+    fseek (file, 8, SEEK_SET);
+    if (png_sig_cmp(fBuffer, 0, 8))
+        abort_("[read_png_file] File %s is not recognized as a PNG file", fName);
+
+    png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+
+    if (!png_ptr)
+        abort_("[read_png_file] png_create_read_struct failed");
+
+    png_infop info_ptr = png_create_info_struct(png_ptr);
+    if (!info_ptr)
+        abort_("[read_png_file] png_create_info_struct failed");
+
+    if (setjmp(png_jmpbuf(png_ptr)))
+        abort_("[read_png_file] Error during init_io");
+
+    png_init_io(png_ptr, file);
+    png_set_sig_bytes(png_ptr, 8);
+
+    png_read_info(png_ptr, info_ptr);
+
+    pxWidth = png_get_image_width(png_ptr, info_ptr);
+    pxHeight = png_get_image_height(png_ptr, info_ptr);
+    //  color_type = png_get_color_type(png_ptr, info_ptr);
+    //  bit_depth = png_get_bit_depth(png_ptr, info_ptr);
+
+    int number_of_passes = png_set_interlace_handling(png_ptr);
+    png_read_update_info(png_ptr, info_ptr);
+
+
+    pxArr = new unsigned short**[pxHeight];
+    for (unsigned i = 0; i < pxHeight; i++) {
+        pxArr[i] = new unsigned short*[pxWidth];
+        for (unsigned j = 0; j < pxWidth; j++) {
+            pxArr[i][j] = new unsigned short[4];
+        }
+    }
+
+    /* read file */
+    if (setjmp(png_jmpbuf(png_ptr)))
+        abort_("[read_png_file] Error during read_image");
+
+    png_bytep* row_pointers = (png_bytep*) malloc(sizeof (png_bytep) * pxHeight);
+    for (unsigned y = 0; y < pxHeight; y++)
+        row_pointers[y] = (png_byte*) malloc(png_get_rowbytes(png_ptr, info_ptr));
+
+    png_read_image(png_ptr, row_pointers);
+
+    pxFormat = (png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_RGB) ? 3 : 4;
+
+    for (unsigned y = 0; y < pxHeight; y++) {
+        png_byte* row = row_pointers[y];
+        for (unsigned x = 0; x < pxWidth; x++) {
+            png_byte* ptr = &(row[x * pxFormat]);
+            pxArr[y][x][0] = ptr[0];
+            pxArr[y][x][1] = ptr[1];
+            pxArr[y][x][2] = ptr[2];
+            if(pxFormat == 4)
+                pxArr[y][x][3] = ptr[3];
+        }
+    }
 }
 
 void uImage::write_bmp(const char* fileName) {
@@ -224,8 +285,8 @@ void uImage::write_jpg(const char* fileName) {
 
 void uImage::write_png(const char* fileName) {
 
-    int ui_width = (int)pxWidth;
-    int ui_height = (int)pxHeight;
+    int ui_width = (int) pxWidth;
+    int ui_height = (int) pxHeight;
     png_bytep* ui_row_pointers = (png_bytep*) malloc(sizeof (png_bytep) * ui_height);
     for (int y = 0; y < ui_height; y++)
         ui_row_pointers[y] = (png_byte*) malloc(3 * ui_width);
@@ -233,21 +294,22 @@ void uImage::write_png(const char* fileName) {
     for (int y = 0; y < ui_height; y++) {
         png_byte* row = ui_row_pointers[y];
         for (int x = 0; x < ui_width; x++) {
-            png_byte* ptr = &(row[x * 3]);
+            png_byte* ptr = &(row[x * pxFormat]);
             ptr[0] = pxArr[y][x][0];
             ptr[1] = pxArr[y][x][1];
             ptr[2] = pxArr[y][x][2];
-            ptr[3] = pxArr[y][x][3];
+            if(pxFormat == 4)
+                ptr[3] = pxArr[y][x][3];
         }
     }
-    
+
     png_byte ui_color_type = '\x02';
     png_byte ui_bit_depth = '\x08';
     png_structp ui_png_ptr;
     png_infop ui_info_ptr;
-    
-    FILE *fp = fopen(fileName, "wb");
-    if (!fp)
+
+    FILE *file = fopen(fileName, "wb");
+    if (!file)
         abort_("[ui_write_png_file] File %s could not be opened for writing", fileName);
     ui_png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
@@ -260,7 +322,7 @@ void uImage::write_png(const char* fileName) {
 
     if (setjmp(png_jmpbuf(ui_png_ptr)))
         abort_("[ui_write_png_file] Error during init_io");
-    png_init_io(ui_png_ptr, fp);
+    png_init_io(ui_png_ptr, file);
 
     if (setjmp(png_jmpbuf(ui_png_ptr)))
         abort_("[ui_write_png_file] Error during writing header");
@@ -279,8 +341,11 @@ void uImage::write_png(const char* fileName) {
         abort_("[ui_write_png_file] Error during end of write");
     png_write_end(ui_png_ptr, NULL);
 
-    fclose(fp);
+    for (int y = 0; y < ui_height; y++)
+        free(ui_row_pointers[y]);
+    free(ui_row_pointers);
 
+    fclose(file);
 }
 
 unsigned uImage::get_bytes(unsigned i, unsigned j) {
@@ -294,13 +359,13 @@ unsigned uImage::get_bytes(unsigned i, unsigned j) {
             sum += (unsigned) fBuffer[k];
         }
     } else if (i > j) {
-        
+
         for (unsigned k = i - 1; k > j - 1; k--) {
             sum *= 256;
             sum += (unsigned) fBuffer[k];
         }
     } else
         abort_("Tried to get 0 bytes i: %u j: % u file: %s", i, j, fName);
-    
+
     return sum;
 }

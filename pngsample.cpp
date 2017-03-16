@@ -32,14 +32,23 @@ int number_of_passes;
 png_bytep * row_pointers;
 
 void read_png_file(char* file_name) {
-  unsigned char header[8]; // 8 is the maximum size that can be checked
 
   /* open file and test for it being a png */
   FILE *fp = fopen(file_name, "rb");
+  
+  fseek(fp, 0, SEEK_END);
+  size_t fSize = ftell(fp);
+  rewind(fp);
+
+  unsigned char* fBuffer = new unsigned char[fSize];
+  
   if (!fp)
     abort_utils("[read_png_file] File %s could not be opened for reading", file_name);
-  fread(header, 1, 8, fp);
-  if (png_sig_cmp(header, 0, 8))
+  fread(fBuffer, 1, fSize, fp);
+  
+  fseek (fp, 8, SEEK_SET);
+  
+  if (png_sig_cmp(fBuffer, 0, 8))
     abort_utils("[read_png_file] File %s is not recognized as a PNG file", file_name);
 
 
@@ -169,8 +178,8 @@ void process_file(void) {
     png_byte* row = row_pointers[y];
     for (x = 0; x < width; x++) {
       png_byte* ptr = &(row[x * multiplier]);
-      printf("Pixel at position [ %d - %d ] has RGBA values: %d - %d - %d\n",
-        x, y, ptr[0], ptr[1], ptr[2]); if(x == width-1) printf("\n");
+//      printf("Pixel at position [ %d - %d ] has RGBA values: %d - %d - %d\n",
+//        x, y, ptr[0], ptr[1], ptr[2]); if(x == width-1) printf("\n");
       /* set red value to 0 and green value to the blue one */
 //      ptr[0] = 0;
 //      ptr[1] = ptr[2];
@@ -196,8 +205,9 @@ png_bytep * pngsample() {
   char * in = 
   "png_testrun1"
   ".png";
-  char * out = "modified_"
+  char * out = 
   "png_testrun1"
+  "_pngsample"
   ".png";
   read_png_file(in);
   process_file();
