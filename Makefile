@@ -1,19 +1,19 @@
-CPP = g++
+C = gcc
 
 RM = rm -f
 
-CPPFLAGS = -Wall -g -O3
+FLAGS = -Wall -g
 
-PERMISSIONS = -Wno-multichar -Wno-write-strings -Wno-unused-variable #-fpermissive -Wno-sign-compare
+PERMISSIONS = -Wno-multichar #-Wno-write-strings -Wno-unused-variable #-fpermissive -Wno-sign-compare
 
-LIBS = -lz -lpng
+LIBS = -lpng
 
-SRCS = *.cpp
+SRCS = *.c
 
 MAIN = ultimateconverter
 
 all:
-		$(CPP) $(CPPFLAGS) $(PERMISSIONS) $(LIBS) $(SRCS) -o $(MAIN)
+		$(C) $(FLAGS) $(PERMISSIONS) $(LIBS) $(SRCS) -o $(MAIN)
 
 clean:
 		$(RM) $(MAIN)

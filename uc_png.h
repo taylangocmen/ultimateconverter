@@ -1,18 +1,12 @@
 
-/* 
- * File:   png.h
- * Author: gocmenta
- *
- * Created on March 2, 2017, 1:07 AM
- */
+#ifndef UC_PNG_H
+#define UC_PNG_H
 
-#ifndef PNG_H
-#define PNG_H
+#include "uc_utils.h"
+#include "uc_image.h"
 
-// A PNG header is always 8 bytes
 #define PNG_HEADER_SIZE 8
 
-// The following are always present at the header of a PNG image
 #define PNG_8bit 137
 #define PNG_PNG 'PNG'
 #define PNG_CRLF 3338
@@ -41,9 +35,9 @@
 #define PNG_zTXt 'zTXt'
 
 
-void print_png(uFile* img);
-bool check_png_header_crit(long header);
-const char* header_to_string(long header);
+void read_png(UC_IMAGE* image);
 
-#endif /* PNG_H */
+void write_png(UC_IMAGE* image, const char* fileName);
 
+
+#endif /* UC_PNG_H */

@@ -1,13 +1,9 @@
 
-/* 
- * File:   uBMP.h
- * Author: gocmenta
- *
- * Created on March 14, 2017, 2:03 AM
- */
+#ifndef UC_BMP_H
+#define UC_BMP_H
 
-#ifndef UBMP_H
-#define UBMP_H
+#include "uc_utils.h"
+#include "uc_image.h"
 
 #define BMP_HEADER_SIZE 14
 
@@ -27,5 +23,7 @@
 #define BMP_32BPP 32
 
 
-#endif /* UBMP_H */
+void read_bmp(UC_IMAGE* image);
 
+
+#endif /* UC_BMP_H */
