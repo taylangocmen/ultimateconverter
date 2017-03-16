@@ -102,48 +102,197 @@ void read_bmp(UC_IMAGE* image) {
 }
 
 void write_bmp(UC_IMAGE* image, const char* fileName){
+    
+    unsigned signature = get_bytes(0, 2, image->fBuffer);
+    printf("signature:\n");
+    print_unsigned_bytes(signature, 2);
+    
+    unsigned offsetPxArr = get_bytes(14, 10, image->fBuffer);
+    printf("\noffsetPxArr:\n");
+    print_unsigned_bytes(offsetPxArr, 4);
+    
+    unsigned dibHSize = get_bytes(18, 14, image->fBuffer);
+    printf("\ndibHSize:\n");
+    print_unsigned_bytes(dibHSize, 4);
+    
+//    image->pxWidth = get_bytes(22, 18, image->fBuffer);
+    printf("\nimage->pxWidth:\n");
+    print_unsigned_bytes(image->pxWidth, 4);
+    
+//    image->pxHeight = get_bytes(26, 22, image->fBuffer);
+    printf("\nimage->pxHeight:\n");
+    print_unsigned_bytes(image->pxHeight, 4);
+    
+    unsigned bitsPPx = get_bytes(30, 28, image->fBuffer);
+    printf("\nbitsPPx:\n");
+    print_unsigned_bytes(bitsPPx, 2);
+    
+    unsigned imageSize = get_bytes(38, 34, image->fBuffer);
+    printf("\nimageSize:\n");
+    print_unsigned_bytes(imageSize, 4);
+    
+    unsigned colorsInTable = get_bytes(50, 46, image->fBuffer);
+    printf("\ncolorsInTable:\n");
+    print_unsigned_bytes(colorsInTable, 4);
+    
+    unsigned endPxArr = offsetPxArr + imageSize;
+    printf("\nendPxArr:\n");
+    print_unsigned_bytes(endPxArr, 4);
+    
+    unsigned bytesPPx = bitsPPx / 8;
+    printf("\nbytesPPx:\n");
+    print_unsigned_bytes(bytesPPx, 2);
+    
+    unsigned lineSize = imageSize / image->pxHeight;
+    printf("\nlineSize:\n");
+    print_unsigned_bytes(lineSize, 4);
+    
+    unsigned paddingPLine = lineSize % bytesPPx;
+    printf("\npaddingPLine:\n");
+    print_unsigned_bytes(paddingPLine, 1);
+    
+    assert(lineSize - paddingPLine == image->pxWidth * bytesPPx);
+
+    
+    
+    
+//    unsigned char bitmapStream[1000];
+//    
+//    // bitmapStream signature
+//    unsigned signature = get_bytes(0, 2, image->fBuffer);
+//    bitmapStream[0] = BOFF0(signature);
+//    bitmapStream[1] = BOFF1(signature);
+//    
+//    // file fileSize
+//    bitmapStream[2] = ;
+//    bitmapStream[3] = ;
+//    bitmapStream[4] = ;
+//    bitmapStream[5] = ;
+//    
+//    // reserved field (in hex. 00 00 00 00)
+//    for(i = 6; i < 10; i++) 
+//        bitmapStream[i] = ;
+//    
+//    // offset of pixel data inside the image
+//    bitmapStream[10] = ;
+//    bitmapStream[11] = ;
+//    bitmapStream[12] = ;
+//    bitmapStream[13] = ;
+//
+//    // -- BITMAP HEADER -- //
+//    // header fileSize
+//    bitmapStream[14] = ;
+//    bitmapStream[15] = ;
+//    bitmapStream[16] = ;
+//    bitmapStream[17] = ;
+//
+//    // width of the image
+//    bitmapStream[18] = ;
+//    bitmapStream[19] = ;
+//    bitmapStream[20] = ;
+//    bitmapStream[21] = ;
+//
+//    // height of the image
+//    bitmapStream[22] = ;
+//    bitmapStream[23] = ;
+//    bitmapStream[24] = ;
+//    bitmapStream[25] = ;
+//
+//
+//    // Planes
+//    bitmapStream[26] = ;
+//    bitmapStream[27] = ;
+//
+//    // number of bits per pixel
+//    bitmapStream[28] = ; // 3 byte
+//    bitmapStream[29] = ;
+//
+//    // compression method (no compression)
+//    for(i = 30; i < 34; i++)
+//        bitmapStream[i] = ;
+//
+//    // fileSize of pixel data
+//    bitmapStream[34] = ;
+//    bitmapStream[35] = ;
+//    bitmapStream[36] = ;
+//    bitmapStream[37] = ;
+//
+//    // horizontal resolution of the image - pixels per meter (2835)
+//    bitmapStream[38] = ;
+//    bitmapStream[39] = ;
+//    bitmapStream[40] = ;
+//    bitmapStream[41] = ;
+//
+//    // vertical resolution of the image - pixels per meter (2835)
+//    bitmapStream[42] = ;
+//    bitmapStream[43] = ;
+//    bitmapStream[44] = ;
+//    bitmapStream[45] = ;
+//
+//    // color pallette information
+//    for(i = 46; i < 50; i++)
+//        bitmapStream[i] = ;
+//
+//    // number of important colors
+//    for(i = 50; i < 54; i++)
+//        bitmapStream[i] = ;
+//
+//    // -- PIXEL DATA -- //
+//    for(i = 54; i < 66; i++)
+//        bitmapStream[i] = ;
+//
+//    FILE *file;
+//    file = fopen(fileName, "wb");
+//    fputs(bitmapStream, file);
+//    fclose(file);
+}
+
+
+void write_alternate_bmp(UC_IMAGE* image, const char* fileName){
     char bitmapStream[1000];
     unsigned i;
     
-    unsigned fileSize = BMP_HEADER_SIZE;
-    unsigned offsetPxArr;
+    unsigned fileSize = BMP_HEADER_SIZE + DIB_INFO;
+    unsigned offsetPxArr = 0;
     
-    // -- FILE HEADER -- //
-
+    
     // bitmapStream signature
     bitmapStream[0] = 'B';
     bitmapStream[1] = 'M';
-
     // file fileSize
-    bitmapStream[2] = fileSize & 0x000000FF;
-    bitmapStream[3] = fileSize & 0x0000FF00;
-    bitmapStream[4] = fileSize & 0x00FF0000;
-    bitmapStream[5] = fileSize & 0xFF000000;
-
+    bitmapStream[2] = fileSize & 0xFF000000;
+    bitmapStream[3] = fileSize & 0x00FF0000;
+    bitmapStream[4] = fileSize & 0x0000FF00;
+    bitmapStream[5] = fileSize & 0x000000FF;
     // reserved field (in hex. 00 00 00 00)
     for(i = 6; i < 10; i++) bitmapStream[i] = 0;
-
     // offset of pixel data inside the image
-    bitmapStream[10] = offsetPxArr & 0x000000FF;
-    bitmapStream[11] = offsetPxArr & 0x0000FF00;
-    bitmapStream[12] = offsetPxArr & 0x00FF0000;
-    bitmapStream[13] = offsetPxArr & 0xFF000000;
+    bitmapStream[10] = offsetPxArr & 0xFF000000;
+    bitmapStream[11] = offsetPxArr & 0x00FF0000;
+    bitmapStream[12] = offsetPxArr & 0x0000FF00;
+    bitmapStream[13] = offsetPxArr & 0x000000FF;
 
     // -- BITMAP HEADER -- //
-
     // header fileSize
-    bitmapStream[14] = 40;
-    for(i = 15; i < 18; i++) bitmapStream[i] = 0;
+    bitmapStream[14] = DIB_INFO & 0xFF000000;
+    bitmapStream[15] = DIB_INFO & 0x00FF0000;
+    bitmapStream[16] = DIB_INFO & 0x0000FF00;
+    bitmapStream[17] = DIB_INFO & 0x000000FF;
 
     // width of the image
-    bitmapStream[18] = 4;
-    for(i = 19; i < 22; i++) bitmapStream[i] = 0;
+    bitmapStream[18] = image->pxWidth & 0xFF000000;
+    bitmapStream[19] = image->pxWidth & 0x00FF0000;
+    bitmapStream[20] = image->pxWidth & 0x0000FF00;
+    bitmapStream[21] = image->pxWidth & 0x000000FF;
 
     // height of the image
-    bitmapStream[22] = 1;
-    for(i = 23; i < 26; i++) bitmapStream[i] = 0;
+    bitmapStream[22] = image->pxHeight & 0xFF000000;
+    bitmapStream[23] = image->pxHeight & 0x00FF0000;
+    bitmapStream[24] = image->pxHeight & 0x0000FF00;
+    bitmapStream[25] = image->pxHeight & 0x000000FF;
 
-    // reserved field
+
+    // Planes
     bitmapStream[26] = 1;
     bitmapStream[27] = 0;
 
@@ -151,7 +300,7 @@ void write_bmp(UC_IMAGE* image, const char* fileName){
     bitmapStream[28] = 24; // 3 byte
     bitmapStream[29] = 0;
 
-    // compression method (no compression here)
+    // compression method (no compression)
     for(i = 30; i < 34; i++) bitmapStream[i] = 0;
 
     // fileSize of pixel data

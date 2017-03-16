@@ -38,9 +38,8 @@ UC_IMAGE* open_uc_image(const char* fileName, unsigned fmt) {
 }
 
 void write_uc_image(UC_IMAGE* image, const char* fileName, unsigned fmt){
-//    if (fmt == bmp) write_bmp(image);
-//    else 
-        if (fmt == png) write_png(image, fileName);
+    if (fmt == bmp) write_bmp(image, fileName);
+    else if (fmt == png) write_png(image, fileName);
 }
 
 void close_uc_image(UC_IMAGE* image) {
