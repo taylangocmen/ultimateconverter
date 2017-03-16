@@ -36,12 +36,12 @@ void print_binary(size_t const size, void const * const ptr) {
     unsigned char byte;
     int i, j;
 
-    for (i = size - 1; i >= 0; i--) {
+    for (i = size - 1; i >= 0; i--)
         for (j = 7; j >= 0; j--) {
             byte = (b[i] >> j) & 1;
             printf("%u", byte);
         }
-    }
+
     printf("\n");
 
     return;
@@ -52,13 +52,11 @@ unsigned get_bytes(unsigned i, unsigned j, unsigned char* buffer) {
     unsigned k = 0;
 
     if (j > i) {
-
         for (k = i; k < j; k++) {
             sum *= 256;
             sum += (unsigned) buffer[k];
         }
     } else if (i > j) {
-
         for (k = i - 1; k > j - 1; k--) {
             sum *= 256;
             sum += (unsigned) buffer[k];

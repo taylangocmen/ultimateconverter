@@ -100,3 +100,89 @@ void read_bmp(UC_IMAGE* image) {
     abort_("We don't know what to do with DIB_V5 yet file: %s", image->fName);
     return;
 }
+
+void write_bmp(UC_IMAGE* image, const char* fileName){
+    char bitmapStream[1000];
+    unsigned i;
+    
+    unsigned fileSize = BMP_HEADER_SIZE;
+    unsigned offsetPxArr;
+    
+    // -- FILE HEADER -- //
+
+    // bitmapStream signature
+    bitmapStream[0] = 'B';
+    bitmapStream[1] = 'M';
+
+    // file fileSize
+    bitmapStream[2] = fileSize & 0x000000FF;
+    bitmapStream[3] = fileSize & 0x0000FF00;
+    bitmapStream[4] = fileSize & 0x00FF0000;
+    bitmapStream[5] = fileSize & 0xFF000000;
+
+    // reserved field (in hex. 00 00 00 00)
+    for(i = 6; i < 10; i++) bitmapStream[i] = 0;
+
+    // offset of pixel data inside the image
+    bitmapStream[10] = offsetPxArr & 0x000000FF;
+    bitmapStream[11] = offsetPxArr & 0x0000FF00;
+    bitmapStream[12] = offsetPxArr & 0x00FF0000;
+    bitmapStream[13] = offsetPxArr & 0xFF000000;
+
+    // -- BITMAP HEADER -- //
+
+    // header fileSize
+    bitmapStream[14] = 40;
+    for(i = 15; i < 18; i++) bitmapStream[i] = 0;
+
+    // width of the image
+    bitmapStream[18] = 4;
+    for(i = 19; i < 22; i++) bitmapStream[i] = 0;
+
+    // height of the image
+    bitmapStream[22] = 1;
+    for(i = 23; i < 26; i++) bitmapStream[i] = 0;
+
+    // reserved field
+    bitmapStream[26] = 1;
+    bitmapStream[27] = 0;
+
+    // number of bits per pixel
+    bitmapStream[28] = 24; // 3 byte
+    bitmapStream[29] = 0;
+
+    // compression method (no compression here)
+    for(i = 30; i < 34; i++) bitmapStream[i] = 0;
+
+    // fileSize of pixel data
+    bitmapStream[34] = 12; // 12 bits => 4 pixels
+    bitmapStream[35] = 0;
+    bitmapStream[36] = 0;
+    bitmapStream[37] = 0;
+
+    // horizontal resolution of the image - pixels per meter (2835)
+    bitmapStream[38] = 0;
+    bitmapStream[39] = 0;
+    bitmapStream[40] = 0b00110000;
+    bitmapStream[41] = 0b10110001;
+
+    // vertical resolution of the image - pixels per meter (2835)
+    bitmapStream[42] = 0;
+    bitmapStream[43] = 0;
+    bitmapStream[44] = 0b00110000;
+    bitmapStream[45] = 0b10110001;
+
+    // color pallette information
+    for(i = 46; i < 50; i++) bitmapStream[i] = 0;
+
+    // number of important colors
+    for(i = 50; i < 54; i++) bitmapStream[i] = 0;
+
+    // -- PIXEL DATA -- //
+    for(i = 54; i < 66; i++) bitmapStream[i] = 0;
+
+    FILE *file;
+    file = fopen(fileName, "wb");
+    fputs(bitmapStream, file);
+    fclose(file);
+}

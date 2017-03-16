@@ -24,4 +24,6 @@
 
 void read_bmp(UC_IMAGE* image);
 
+void write_bmp(UC_IMAGE* image, const char* fileName);
+
 #endif /* UC_BMP_H */
