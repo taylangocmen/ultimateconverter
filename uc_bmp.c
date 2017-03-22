@@ -101,7 +101,11 @@ void read_bmp(UC_IMAGE* image) {
     return;
 }
 
-void write_bmp(UC_IMAGE* image, const char* fileName){
+void write_bmp_oldversion(UC_IMAGE* image, const char* fileName){
+    
+    printf("%s\n", image->fName);
+    printf("to\n");
+    printf("%s\n\n", fileName);
     
     unsigned signature = get_bytes(0, 2, image->fBuffer);
     printf("signature:\n");
@@ -248,90 +252,208 @@ void write_bmp(UC_IMAGE* image, const char* fileName){
 }
 
 
-void write_alternate_bmp(UC_IMAGE* image, const char* fileName){
-    char bitmapStream[1000];
-    unsigned i;
+void write_bmp(UC_IMAGE* image, const char* fileName){
     
-    unsigned fileSize = BMP_HEADER_SIZE + DIB_INFO;
-    unsigned offsetPxArr = 0;
+//    printf("BOFF0(BMP_PPM): %02X\n", BOFF0(BMP_PPM));
+//    printf("BOFF1(BMP_PPM): %02X\n", BOFF1(BMP_PPM));
+//    printf("BOFF2(BMP_PPM): %02X\n", BOFF2(BMP_PPM));
+//    printf("BOFF3(BMP_PPM): %02X\n", BOFF3(BMP_PPM));
     
+//    printf("%f = %u\n", BMP_BLUEINDEX256(BMP_BLUE256(0)), round_(BMP_BLUEINDEX256(BMP_BLUE256(0))));
+//    printf("%f = %u\n", BMP_BLUEINDEX256(BMP_BLUE256(1)), round_(BMP_BLUEINDEX256(BMP_BLUE256(1))));
+//    printf("%f = %u\n", BMP_BLUEINDEX256(BMP_BLUE256(2)), round_(BMP_BLUEINDEX256(BMP_BLUE256(2))));
+//    printf("%f = %u\n", BMP_BLUEINDEX256(BMP_BLUE256(3)), round_(BMP_BLUEINDEX256(BMP_BLUE256(3))));
+    
+    unsigned pxWidth = image->pxWidth;
+    unsigned pxHeight = image->pxHeight;
+    unsigned pxFormat = image->pxFormat;
+    assert(pxFormat == 3);
+   
+//    unsigned char bitmapStream[1000];
+//    for(i = 0; i < 256; i++){
+//        unsigned color = bmp256_color_table_index_to_color(i);
+//        printf("i=%u : color=%u : index=", i, color);
+//        fflush(stdout);
+//        unsigned index = bmp256_color_table_color_to_index(BOFF2(color), BOFF1(color), BOFF0(color));
+////        printf("i=%u : BOFF0(color)=%02X\n", i, BOFF0(color));
+////        printf("i=%u : BOFF1(color)=%02X\n", i, BOFF1(color));
+////        printf("i=%u : BOFF2(color)=%02X\n", i, BOFF2(color));
+////        printf("i=%u : BOFF3(color)=%02X\n", i, BOFF3(color));
+//        printf("%u\n", index);
+//        fflush(stdout);
+//    }
+    
+    
+    unsigned offsetPxArr = BMP_HEADER_SIZE + DIB_INFO + (4 * BMP_256);
+    unsigned padding = (4 - (pxWidth % 4));
+    if(padding == 4) padding = 0;
+    unsigned lineSize = (pxWidth + padding);
+    unsigned imageSize = (pxHeight * lineSize);
+    unsigned fileSize = offsetPxArr + imageSize;
+    unsigned char* bitmapStream = (unsigned char *)malloc(fileSize * sizeof(unsigned char));
+    unsigned i, j;
+    
+    
+//    printf("BOFF0(fileSize): %02X\n", BOFF0(fileSize));
+//    printf("BOFF1(fileSize): %02X\n", BOFF1(fileSize));
+//    printf("BOFF2(fileSize): %02X\n", BOFF2(fileSize));
+//    printf("BOFF3(fileSize): %02X\n", BOFF3(fileSize));
     
     // bitmapStream signature
     bitmapStream[0] = 'B';
     bitmapStream[1] = 'M';
+    
     // file fileSize
-    bitmapStream[2] = fileSize & 0xFF000000;
-    bitmapStream[3] = fileSize & 0x00FF0000;
-    bitmapStream[4] = fileSize & 0x0000FF00;
-    bitmapStream[5] = fileSize & 0x000000FF;
+    bitmapStream[2] = BOFF0(fileSize);
+    bitmapStream[3] = BOFF1(fileSize);
+    bitmapStream[4] = BOFF2(fileSize);
+    bitmapStream[5] = BOFF3(fileSize);
+    
     // reserved field (in hex. 00 00 00 00)
     for(i = 6; i < 10; i++) bitmapStream[i] = 0;
+    
     // offset of pixel data inside the image
-    bitmapStream[10] = offsetPxArr & 0xFF000000;
-    bitmapStream[11] = offsetPxArr & 0x00FF0000;
-    bitmapStream[12] = offsetPxArr & 0x0000FF00;
-    bitmapStream[13] = offsetPxArr & 0x000000FF;
+    bitmapStream[10] = BOFF0(offsetPxArr);
+    bitmapStream[11] = BOFF1(offsetPxArr);
+    bitmapStream[12] = BOFF2(offsetPxArr);
+    bitmapStream[13] = BOFF3(offsetPxArr);
 
-    // -- BITMAP HEADER -- //
-    // header fileSize
-    bitmapStream[14] = DIB_INFO & 0xFF000000;
-    bitmapStream[15] = DIB_INFO & 0x00FF0000;
-    bitmapStream[16] = DIB_INFO & 0x0000FF00;
-    bitmapStream[17] = DIB_INFO & 0x000000FF;
+    // -- BITMAP HEADER -- // // header fileSize
+    bitmapStream[14] = BOFF0(DIB_INFO);
+    bitmapStream[15] = BOFF1(DIB_INFO);
+    bitmapStream[16] = BOFF2(DIB_INFO);
+    bitmapStream[17] = BOFF3(DIB_INFO);
 
     // width of the image
-    bitmapStream[18] = image->pxWidth & 0xFF000000;
-    bitmapStream[19] = image->pxWidth & 0x00FF0000;
-    bitmapStream[20] = image->pxWidth & 0x0000FF00;
-    bitmapStream[21] = image->pxWidth & 0x000000FF;
+    bitmapStream[18] = BOFF0(pxWidth);
+    bitmapStream[19] = BOFF1(pxWidth);
+    bitmapStream[20] = BOFF2(pxWidth);
+    bitmapStream[21] = BOFF3(pxWidth);
 
     // height of the image
-    bitmapStream[22] = image->pxHeight & 0xFF000000;
-    bitmapStream[23] = image->pxHeight & 0x00FF0000;
-    bitmapStream[24] = image->pxHeight & 0x0000FF00;
-    bitmapStream[25] = image->pxHeight & 0x000000FF;
-
+    bitmapStream[22] = BOFF0(pxHeight);
+    bitmapStream[23] = BOFF1(pxHeight);
+    bitmapStream[24] = BOFF2(pxHeight);
+    bitmapStream[25] = BOFF3(pxHeight);
 
     // Planes
     bitmapStream[26] = 1;
     bitmapStream[27] = 0;
 
     // number of bits per pixel
-    bitmapStream[28] = 24; // 3 byte
+//    printf("pxFormat:%u\n", image->pxFormat);
+//    if(image->pxFormat == 3)
+    bitmapStream[28] = 8; // 3 byte
     bitmapStream[29] = 0;
 
     // compression method (no compression)
     for(i = 30; i < 34; i++) bitmapStream[i] = 0;
 
     // fileSize of pixel data
-    bitmapStream[34] = 12; // 12 bits => 4 pixels
-    bitmapStream[35] = 0;
-    bitmapStream[36] = 0;
-    bitmapStream[37] = 0;
+    bitmapStream[34] = BOFF0(imageSize);
+    bitmapStream[35] = BOFF1(imageSize);
+    bitmapStream[36] = BOFF2(imageSize);
+    bitmapStream[37] = BOFF3(imageSize);
 
     // horizontal resolution of the image - pixels per meter (2835)
-    bitmapStream[38] = 0;
-    bitmapStream[39] = 0;
-    bitmapStream[40] = 0b00110000;
-    bitmapStream[41] = 0b10110001;
+    bitmapStream[38] = BOFF0(BMP_PPM);
+    bitmapStream[39] = BOFF1(BMP_PPM);
+    bitmapStream[40] = BOFF2(BMP_PPM);
+    bitmapStream[41] = BOFF3(BMP_PPM);
 
     // vertical resolution of the image - pixels per meter (2835)
-    bitmapStream[42] = 0;
-    bitmapStream[43] = 0;
-    bitmapStream[44] = 0b00110000;
-    bitmapStream[45] = 0b10110001;
+    bitmapStream[42] = BOFF0(BMP_PPM);
+    bitmapStream[43] = BOFF1(BMP_PPM);
+    bitmapStream[44] = BOFF2(BMP_PPM);
+    bitmapStream[45] = BOFF3(BMP_PPM);
 
     // color pallette information
-    for(i = 46; i < 50; i++) bitmapStream[i] = 0;
+    bitmapStream[46] = BOFF0(BMP_256);
+    bitmapStream[47] = BOFF1(BMP_256);
+    bitmapStream[48] = BOFF2(BMP_256);
+    bitmapStream[49] = BOFF3(BMP_256);
 
     // number of important colors
     for(i = 50; i < 54; i++) bitmapStream[i] = 0;
 
-    // -- PIXEL DATA -- //
-    for(i = 54; i < 66; i++) bitmapStream[i] = 0;
+    // -- color table -- //
+    for(i = 54, j = 0; j < BMP_256; i+=4, j++){
+//        printf("%u = %u\n", j, bmp256_color_table(j));
+        unsigned color = bmp256_color_table_index_to_color(j);
+        bitmapStream[i] = BOFF0(color);
+        bitmapStream[i+1] = BOFF1(color);
+        bitmapStream[i+2] = BOFF2(color);
+        bitmapStream[i+3] = BOFF3(color);
+//        printf("%u - BOFF0(color): %02X\n", j, BOFF0(color));
+//        printf("%u - BOFF1(color): %02X\n", j, BOFF1(color));
+//        printf("%u - BOFF2(color): %02X\n", j, BOFF2(color));
+//        printf("%u - BOFF3(color): %02X\n", j, BOFF3(color));
 
+    }
+
+    unsigned a, b;
+    
+    for(a = pxHeight; a > 0; a--){
+        for(b = 0; b < pxWidth; b++, i++) {
+            unsigned short r = image->pxArr[a-1][b][0];
+            unsigned short g = image->pxArr[a-1][b][1];
+            unsigned short b = image->pxArr[a-1][b][2];
+            unsigned index = bmp256_color_table_color_to_index(r, g, b);
+            bitmapStream[i] = index;
+        }
+        for(b = 0; b < padding; b++, i++){
+            bitmapStream[i] = 0;
+        }
+    }
+    
+//    for(i = 0; i < 1000; i++){
+//        printf("\n%u=%02X  ---  %C\n", i, i, bitmapStream[i]);
+//        print_unsigned_bytes(bitmapStream[i], 1);
+//    }
+//    printf("Test");
+    
     FILE *file;
     file = fopen(fileName, "wb");
-    fputs(bitmapStream, file);
+//    fputs((char*)bitmapStream, file);
+    for(i = 0; i < fileSize; i++)
+        fputc(bitmapStream[i], file);
+    
     fclose(file);
+    
+    free(bitmapStream);
+}
+
+unsigned bmp256_color_table_index_to_color(unsigned i){
+    assert(i >= 0);
+    assert(i < BMP_256);
+    
+    unsigned red = BMP_RED256(i);
+    unsigned color = red;
+    color *= BMP_256;
+    
+    unsigned green = BMP_GREEN256(i);
+    color += green;
+    color *= BMP_256;
+    
+    unsigned blue = BMP_BLUE256(i);
+    color += blue;
+    
+    return color;
+}
+
+unsigned bmp256_color_table_color_to_index(unsigned short r, unsigned short g, unsigned short b){
+    assert(r >= 0);
+    assert(r < BMP_256);
+    assert(g >= 0);
+    assert(g < BMP_256);
+    assert(b >= 0);
+    assert(b < BMP_256);
+    
+    unsigned red = round_(BMP_REDINDEX256(r));
+    unsigned green = round_(BMP_GREENINDEX256(g));
+    unsigned blue = round_(BMP_BLUEINDEX256(b));
+    
+    unsigned index = (red << 5) + (green << 2) + blue;
+    
+    return index;
 }

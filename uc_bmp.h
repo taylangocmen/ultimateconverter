@@ -22,8 +22,22 @@
 #define BMP_24BPP 24
 #define BMP_32BPP 32
 
+#define BMP_PPM 2835
+
+#define BMP_256 256
+#define BMP_BLUE256(x)  ((unsigned)(((float)(x & 0b11) / (float)3.0) * (float)255.0))
+#define BMP_GREEN256(x) ((unsigned)(((float)((x >> 2) & 0b111) / (float)7.0) * (float)255.0))
+#define BMP_RED256(x)   ((unsigned)(((float)((x >> 5) & 0b111) / (float)7.0) * (float)255.0))
+
+#define BMP_BLUEINDEX256(x)  (((float)x / (float)255.0) * (float)0b11)
+#define BMP_GREENINDEX256(x) (((float)x / (float)255.0) * (float)0b111)
+#define BMP_REDINDEX256(x)   (((float)x / (float)255.0) * (float)0b111)
+
 void read_bmp(UC_IMAGE* image);
 
 void write_bmp(UC_IMAGE* image, const char* fileName);
+
+unsigned bmp256_color_table_index_to_color(unsigned i);
+unsigned bmp256_color_table_color_to_index(unsigned short r, unsigned short g, unsigned short b);
 
 #endif /* UC_BMP_H */

@@ -4,7 +4,7 @@ RM = rm -f
 
 FLAGS = -Wall -g
 
-PERMISSIONS = -Wno-multichar #-Wno-write-strings -Wno-unused-variable #-fpermissive -Wno-sign-compare
+PERMISSIONS = #-Wno-multichar #-Wno-write-strings -Wno-unused-variable #-fpermissive -Wno-sign-compare
 
 LIBS = -lpng
 
