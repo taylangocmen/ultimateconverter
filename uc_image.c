@@ -3,8 +3,9 @@
 #include <stdlib.h>
 
 #include "uc_bmp.h"
-#include "uc_image.h"
 #include "uc_png.h"
+#include "uc_jpg.h"
+#include "uc_image.h"
 #include "uc_utils.h"
 
 UC_IMAGE* open_uc_image(const char* fileName, unsigned fmt) {
@@ -33,6 +34,7 @@ UC_IMAGE* open_uc_image(const char* fileName, unsigned fmt) {
 
     if (fmt == bmp) read_bmp(image);
     else if (fmt == png) read_png(image);
+    else if (fmt == jpg) read_jpg(image);
 
     return image;
 }
@@ -40,6 +42,7 @@ UC_IMAGE* open_uc_image(const char* fileName, unsigned fmt) {
 void write_uc_image(UC_IMAGE* image, const char* fileName, unsigned fmt){
     if (fmt == bmp) write_bmp(image, fileName);
     else if (fmt == png) write_png(image, fileName);
+    else if (fmt == jpg) write_jpg(image, fileName);
 }
 
 void close_uc_image(UC_IMAGE* image) {
