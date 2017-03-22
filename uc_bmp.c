@@ -222,21 +222,27 @@ void write_bmp(UC_IMAGE* image, const char* fileName){
     free(bitmapStream);
 }
 
+#define FACTBLUE 6
+#define FACTGREEN 6
+#define FACTRED 6
+
 unsigned bmp256_color_table_index_to_color(unsigned i){
     assert(i >= 0);
     assert(i < BMP_256);
 
-    unsigned red = BMP_RED256(i);
-    unsigned color = red;
+    unsigned blue = i % FACTBLUE;
+    unsigned green = (i / FACTBLUE) % FACTGREEN;
+    unsigned red = (i / (FACTBLUE * FACTGREEN)) % FACTRED;
+    
+    unsigned color = 0;
+    
+    color += round_((float)red * ((float)255 / (float)(FACTBLUE-1)));
     color *= BMP_256;
 
-    unsigned green = BMP_GREEN256(i);
-    color += green;
+    color += round_((float)green * ((float)255 / (float)(FACTGREEN-1)));
     color *= BMP_256;
     
-    unsigned blue = BMP_BLUE256(i);
-    color += blue;
-    
+    color += round_((float)blue * ((float)255 / (float)(FACTRED-1)));
     return color;
 }
 
@@ -248,9 +254,14 @@ unsigned bmp256_color_table_color_to_index(unsigned short r, unsigned short g, u
     assert(b >= 0);
     assert(b < BMP_256);
     
-    unsigned red = round_(BMP_REDINDEX256(r));
-    unsigned green = round_(BMP_GREENINDEX256(g));
-    unsigned blue = round_(BMP_BLUEINDEX256(b));
-    unsigned index = (red << 5) + (green << 2) + blue;
+    unsigned red = round_((float)r / ((float)255 / (float)(FACTRED-1)));
+    unsigned green = round_((float)g / ((float)255 / (float)(FACTGREEN-1)));
+    unsigned blue = round_((float)b / ((float)255 / (float)(FACTBLUE-1)));
+    
+    assert(red >= 0 && red < FACTRED);
+    assert(green >= 0 && green < FACTGREEN);
+    assert(blue >= 0 && blue < FACTBLUE);
+    
+    unsigned index = (red*(FACTBLUE * FACTGREEN)) + (green*FACTBLUE) + blue;
     return index;
 }
