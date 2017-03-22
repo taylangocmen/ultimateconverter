@@ -3,9 +3,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include "uc_bmp.h"
-#include "uc_image.h"
-#include "uc_png.h"
 #include "uc_utils.h"
 
 void abort_(const char* s, ...) {

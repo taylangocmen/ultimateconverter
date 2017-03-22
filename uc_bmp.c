@@ -5,7 +5,6 @@
 
 #include "uc_bmp.h"
 #include "uc_image.h"
-#include "uc_png.h"
 #include "uc_utils.h"
 
 void read_bmp(UC_IMAGE* image) {
