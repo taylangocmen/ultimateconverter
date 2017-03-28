@@ -18,11 +18,11 @@ void read_png(UC_IMAGE* image) {
 
     lodepng_state_init(&state);
 
-    error = lodepng_load_file(&png, &pngsize, image->fName);
+    error = lodepng_load_file(&png, &pngsize);
     if (!error)
         error = lodepng_decode(&rawImage, &width, &height, &state, png, pngsize);
     else
-        abort_("Could not decode png file: %s error %u: %s", image->fName, error, lodepng_error_text(error));
+        abort_("Could not decode png file - error %u: %s", error, lodepng_error_text(error));
 
     free(png);
 

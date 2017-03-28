@@ -12,7 +12,7 @@ void read_bmp(UC_IMAGE* image) {
 
     unsigned signature = get_bytes(0, 2, image->fBuffer);
     if (signature != BMP_BM)
-        abort_("File %s was to be a BMP but was not", image->fName);
+        abort_("File was to be a BMP but was not.");
 
     unsigned offsetPxArr = get_bytes(14, 10, image->fBuffer);
     unsigned dibHSize = get_bytes(18, 14, image->fBuffer);
@@ -20,11 +20,11 @@ void read_bmp(UC_IMAGE* image) {
     image->pxHeight = get_bytes(26, 22, image->fBuffer);
 
     if (dibHSize != DIB_CORE && dibHSize != DIB_INFO && dibHSize != DIB_V4 && dibHSize != DIB_V5)
-        abort_("File: %s has an unsupported DIBHEADER size: %u ", image->fName, dibHSize);
+        abort_("File has an unsupported DIBHEADER size: %u ", dibHSize);
 
     assert(dibHSize >= DIB_CORE);
     if (dibHSize == DIB_CORE) {
-        abort_("We don't know what to do with DIB_CORE yet file: %s", image->fName);
+        abort_("We don't know what to do with DIB_CORE yet file.");
         return;
     }
 
@@ -51,8 +51,8 @@ void read_bmp(UC_IMAGE* image) {
             colorTable[j][3] = get_bytes(index + 4, index + 3, image->fBuffer); // alpha
         }
     } else if (bitsPPx == BMP_16BPP || bitsPPx == BMP_24BPP || bitsPPx == BMP_32BPP) {
-        abort_("We don't know what to do with this BPP yet file: %s", image->fName);
-    } else abort_("File: %s has an unsupported BPP", image->fName);
+        abort_("We don't know what to do with this BPP yet file.");
+    } else abort_("File has an unsupported BPP");
 
 
     unsigned endPxArr = offsetPxArr + imageSize;
@@ -90,13 +90,13 @@ void read_bmp(UC_IMAGE* image) {
     assert(bitsPPx == BMP_16BPP || bitsPPx == BMP_24BPP || bitsPPx == BMP_32BPP);
 
     assert(dibHSize >= DIB_V4);
-    abort_("We don't know what to do with DIB_V4 yet file: %s", image->fName);
+    abort_("We don't know what to do with DIB_V4 yet file.");
     if (dibHSize == DIB_V4) {
         return;
     }
 
     assert(dibHSize == DIB_V5);
-    abort_("We don't know what to do with DIB_V5 yet file: %s", image->fName);
+    abort_("We don't know what to do with DIB_V5 yet file");
     return;
 }
 
