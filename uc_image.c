@@ -75,11 +75,14 @@ void close_uc_image(UC_IMAGE* image) {
     if (image->pxArr != NULL) {
         for (i = 0; i < image->pxHeight; i++) {
             for (j = 0; j < image->pxWidth; j++) {
-                free(image->pxArr[i][j]);
+                if(image->pxArr[i][j] != NULL)
+                    free(image->pxArr[i][j]);
             }
-            free(image->pxArr[i]);
+            if(image->pxArr[i] != NULL)
+                free(image->pxArr[i]);
         }
-        free(image->pxArr);
+        if(image->pxArr != NULL)
+            free(image->pxArr);
         image->pxArr = NULL;
     }
 }

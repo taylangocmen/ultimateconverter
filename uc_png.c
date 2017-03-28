@@ -18,7 +18,11 @@ void read_png(UC_IMAGE* image) {
 
     lodepng_state_init(&state);
 
-    error = lodepng_load_file(&png, &pngsize);
+    //    error = lodepng_load_file(&png, &pngsize, image->fName);
+    error = 0;
+    png = image->fBuffer;
+    pngsize = image->fSize;
+    
     if (!error)
         error = lodepng_decode(&rawImage, &width, &height, &state, png, pngsize);
     else

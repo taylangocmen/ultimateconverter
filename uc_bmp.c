@@ -3,9 +3,16 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#include "xparameters.h"
+#include "xil_cache.h"
+#include "xintc.h"
+#include "intc_header.h"
+
 #include "uc_bmp.h"
 #include "uc_image.h"
 #include "uc_utils.h"
+
+volatile int* IP = XPAR_CUSTOM_SPEED_UP_FINAL_0_S00_AXI_BASEADDR;
 
 void read_bmp(UC_IMAGE* image) {
     unsigned i, j;
@@ -226,41 +233,54 @@ void write_bmp(UC_IMAGE* image, const char* fileName){
 #define FACTRED 6
 
 unsigned bmp256_color_table_index_to_color(unsigned i){
-    assert(i >= 0);
-    assert(i < BMP_256);
-
-    unsigned blue = i % FACTBLUE;
-    unsigned green = (i / FACTBLUE) % FACTGREEN;
-    unsigned red = (i / (FACTBLUE * FACTGREEN)) % FACTRED;
+//    assert(i >= 0);
+//    assert(i < BMP_256);
+//
+//    unsigned blue = i % FACTBLUE;
+//    unsigned green = (i / FACTBLUE) % FACTGREEN;
+//    unsigned red = (i / (FACTBLUE * FACTGREEN)) % FACTRED;
+//    
+//    unsigned color = 0;
+//    
+//    color += round_((float)red * ((float)255 / (float)(FACTBLUE-1)));
+//    color *= BMP_256;
+//
+//    color += round_((float)green * ((float)255 / (float)(FACTGREEN-1)));
+//    color *= BMP_256;
+//    
+//    color += round_((float)blue * ((float)255 / (float)(FACTRED-1)));
+//    return color;
     
-    unsigned color = 0;
-    
-    color += round_((float)red * ((float)255 / (float)(FACTBLUE-1)));
-    color *= BMP_256;
-
-    color += round_((float)green * ((float)255 / (float)(FACTGREEN-1)));
-    color *= BMP_256;
-    
-    color += round_((float)blue * ((float)255 / (float)(FACTRED-1)));
+    *(IP) = i;
+    while(*(IP+1) == 0)
+        xil_printf("waiting bmp256_color_table_index_to_color: %u \n", *(IP+1));
+    unsigned color = *(IP+2);
     return color;
 }
 
 unsigned bmp256_color_table_color_to_index(unsigned short r, unsigned short g, unsigned short b){
-    assert(r >= 0);
-    assert(r < BMP_256);
-    assert(g >= 0);
-    assert(g < BMP_256);
-    assert(b >= 0);
-    assert(b < BMP_256);
+//    assert(r >= 0);
+//    assert(r < BMP_256);
+//    assert(g >= 0);
+//    assert(g < BMP_256);
+//    assert(b >= 0);
+//    assert(b < BMP_256);
+//    
+//    unsigned red = round_((float)r / ((float)255 / (float)(FACTRED-1)));
+//    unsigned green = round_((float)g / ((float)255 / (float)(FACTGREEN-1)));
+//    unsigned blue = round_((float)b / ((float)255 / (float)(FACTBLUE-1)));
+//    
+//    assert(red >= 0 && red < FACTRED);
+//    assert(green >= 0 && green < FACTGREEN);
+//    assert(blue >= 0 && blue < FACTBLUE);
+//    
+//    unsigned index = (red*(FACTBLUE * FACTGREEN)) + (green*FACTBLUE) + blue;
+//    return index;
     
-    unsigned red = round_((float)r / ((float)255 / (float)(FACTRED-1)));
-    unsigned green = round_((float)g / ((float)255 / (float)(FACTGREEN-1)));
-    unsigned blue = round_((float)b / ((float)255 / (float)(FACTBLUE-1)));
-    
-    assert(red >= 0 && red < FACTRED);
-    assert(green >= 0 && green < FACTGREEN);
-    assert(blue >= 0 && blue < FACTBLUE);
-    
-    unsigned index = (red*(FACTBLUE * FACTGREEN)) + (green*FACTBLUE) + blue;
+    unsigned color = (b | (g << 8) | (r << 16));
+    *(IP+3) = color;
+    while(*(IP+4)==0)
+        xil_printf("waiting bmp256_color_table_color_to_index: %u \n", *(IP+4));
+    unsigned index = *(IP+5);
     return index;
 }
