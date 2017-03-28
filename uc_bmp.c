@@ -100,7 +100,7 @@ void read_bmp(UC_IMAGE* image) {
     return;
 }
 
-void write_bmp(UC_IMAGE* image, const char* fileName){
+unsigned write_bmp(UC_IMAGE* image, volatile int *toAddr){
     unsigned pxWidth = image->pxWidth;
     unsigned pxHeight = image->pxHeight;
     unsigned pxFormat = image->pxFormat;
@@ -112,7 +112,8 @@ void write_bmp(UC_IMAGE* image, const char* fileName){
     unsigned lineSize = (pxWidth + padding);
     unsigned imageSize = (pxHeight * lineSize);
     unsigned fileSize = offsetPxArr + imageSize;
-    unsigned char* bitmapStream = (unsigned char *)malloc(fileSize * sizeof(unsigned char));
+//    unsigned char* bitmapStream = (unsigned char *)malloc(fileSize * sizeof(unsigned char));
+    unsigned char* bitmapStream = (unsigned char *)toAddr;
     unsigned i, j;
     
     // bitmapStream signature
@@ -213,12 +214,13 @@ void write_bmp(UC_IMAGE* image, const char* fileName){
             bitmapStream[i] = 0;
     }
     
-    FILE *file;
-    file = fopen(fileName, "wb");
-    for(i = 0; i < fileSize; i++)
-        fputc(bitmapStream[i], file);
-    fclose(file);
-    free(bitmapStream);
+//    FILE *file;
+//    file = fopen(fileName, "wb");
+//    for(i = 0; i < fileSize; i++)
+//        fputc(bitmapStream[i], file);
+//    fclose(file);
+//    free(bitmapStream);
+    return fileSize;
 }
 
 #define FACTBLUE 6

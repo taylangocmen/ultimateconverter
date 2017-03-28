@@ -35,7 +35,7 @@
 
 void read_bmp(UC_IMAGE* image);
 
-void write_bmp(UC_IMAGE* image, const char* fileName);
+unsigned write_bmp(UC_IMAGE* image, volatile int *toAddr);
 
 unsigned bmp256_color_table_index_to_color(unsigned i);
 unsigned bmp256_color_table_color_to_index(unsigned short r, unsigned short g, unsigned short b);

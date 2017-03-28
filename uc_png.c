@@ -18,16 +18,16 @@ void read_png(UC_IMAGE* image) {
 
     lodepng_state_init(&state);
 
-    error = lodepng_load_file(&png, &pngsize);
+    png = (unsigned char *)image->fBuffer;
+    pngsize = image->fSize;
+    error = 0;
+    
     if (!error)
         error = lodepng_decode(&rawImage, &width, &height, &state, png, pngsize);
     else
         abort_("Could not decode png file - error %u: %s", error, lodepng_error_text(error));
 
-    free(png);
-
     /*use rawImage here*/
-    /*state contains extra information about the PNG such as text chunks, ...*/
     unsigned i, j;
     format = 3;
     image->pxHeight = height;
@@ -49,7 +49,7 @@ void read_png(UC_IMAGE* image) {
     free(rawImage);
 }
 
-void write_png(UC_IMAGE* image, const char* fileName) {
+unsigned write_png(UC_IMAGE* image, volatile int *toAddr) {
     unsigned pxHeight = image->pxHeight;
     unsigned pxWidth = image->pxWidth;
     unsigned pxFormat = image->pxFormat;
@@ -62,13 +62,27 @@ void write_png(UC_IMAGE* image, const char* fileName) {
                 rawImage[pxFormat * pxWidth * y + pxFormat * x + z] = BOFF0(image->pxArr[y][x][z]);
 
     unsigned err = 1;
-    if (pxFormat == 3)
-        err = lodepng_encode24_file(fileName, rawImage, pxWidth, pxHeight);
-    else if (pxFormat == 4)
-        err = lodepng_encode32_file(fileName, rawImage, pxWidth, pxHeight);
-
+    size_t buffersize;
+    unsigned char* buffer;
+    unsigned char* writebuffer = (unsigned char*) toAddr;
+        
+    if (pxFormat == 3){
+//        err = lodepng_encode24_file(fileName, rawImage, pxWidth, pxHeight);
+//        err = lodepng_encode_file(fileName, rawImage, pxWidth, pxHeight, LCT_RGB, 8));
+        err = lodepng_encode_memory(&buffer, &buffersize, rawImage, pxWidth, pxHeight, LCT_RGB, 8);
+    }
+//    else if (pxFormat == 4)
+//        err = lodepng_encode32_file(fileName, rawImage, pxWidth, pxHeight);
     if (err)
-        abort_("Could not encode png file %s", fileName);
+        abort_("Could not encode png file");
+    
+    unsigned i;
+    unsigned buffersizeunsigned = (unsigned)buffersize;
+    for(i = 0; i < buffersizeunsigned; i++){
+        writebuffer[i] = buffer[i];
+    }
 
+    free(buffer);
     free(rawImage);
+    return buffersizeunsigned;
 }

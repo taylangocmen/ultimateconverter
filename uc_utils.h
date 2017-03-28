@@ -11,7 +11,6 @@
 
 enum UC_FORMAT {
     bmp,
-    jpg,
     png,
 };
 

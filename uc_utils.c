@@ -65,10 +65,6 @@ unsigned get_bytes(unsigned i, unsigned j, unsigned char* buffer) {
 }
 
 void print_unsigned_bytes(unsigned x, unsigned l){
-//    printf("0(%8u):  %02X  =  %C\n", x, BOFF0(x), BOFF0(x));
-//    printf("1(%8u):  %02X  =  %C\n", x, BOFF1(x), BOFF1(x));
-//    printf("2(%8u):  %02X  =  %C\n", x, BOFF2(x), BOFF2(x));
-//    printf("3(%8u):  %02X  =  %C\n", x, BOFF3(x), BOFF3(x));
     if(l > 0) printf("0(%8u):  %02X\n", x, BOFF0(x));
     if(l > 1) printf("1(%8u):  %02X\n", x, BOFF1(x));
     if(l > 2) printf("2(%8u):  %02X\n", x, BOFF2(x));

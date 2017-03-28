@@ -36,6 +36,6 @@
 
 void read_png(UC_IMAGE* image);
 
-void write_png(UC_IMAGE* image, const char* fileName);
+unsigned write_png(UC_IMAGE* image, volatile int *toAddr);
 
 #endif /* UC_PNG_H */
